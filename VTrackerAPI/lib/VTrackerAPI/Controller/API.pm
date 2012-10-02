@@ -54,36 +54,40 @@ sub new_key_POST {
 	return $self->status_created( $c, location => $c->req->uri->as_string, entity => { key => "$id" } );
 };
 
-sub get_categories :Local :Path( '/api' ) :ActionClass('REST') { }
+sub get_categories :Local :Path( '/api' ) :Args( 0 ) :ActionClass('REST') { }
 
 sub get_categories_GET {
-	my ( $self, $c, $params ) = @_;
+	my ( $self, $c ) = @_;
 	my $cursor = $c->fetchDocuments( 'categories', {} );
 	my $categories = { categories => [] };
 	my @results = ();
-	my $param = parse_params( $params );
-		
-	$param->{'type'} = 'popular' unless defined( $param->{'type'} );
-	$param->{'sort'} = 'popular' unless defined( $param->{'sort'} );
-	$param->{'ids'} = [] unless defined( $param->{'ids'} );
-
+	my $params = $c->req->query_params;
+	
+	# defaults
+	$params->{'type'} = 'popular' unless defined( $params->{'type'} );
+	$params->{'sort'} = 'popular' unless defined( $params->{'sort'} );
+	$params->{'ids'} = [] unless defined( $params->{'ids'} );
+	$params->{'count'} = 10 unless defined( $params->{'count'} );
+	
 	# sort the resultset
-	if( $param->{'sort'} eq 'alpha' ){
+	if( $params->{'sort'} eq 'alpha' ){
 		$cursor->sort( { name => 1 } );
 	}
-	elsif( $param->{'sort'} eq 'popular' ){
+	elsif( $params->{'sort'} eq 'popular' ){
 		$cursor->sort( { likes => 1 } );
 	}
 	
+	$cursor->limit( $params->{'count'} );
+	
 	# narrow the resultset	
-	if( $param->{'type'} eq 'all' ){
+	if( $params->{'type'} eq 'all' ){
 		@results = $cursor->all;
 	}
-	elsif( $param->{'type'} eq 'custom' ){
+	elsif( $params->{'type'} eq 'custom' ){
 		@results = $cursor->all;
 	}
-	elsif( $param->{'type'} eq 'popular' ){
-		@results = $cursor->limit( 10 )->all;
+	elsif( $params->{'type'} eq 'popular' ){
+		@results = $cursor->all;
 	}
 	else {
 		return $self->status_not_found( $c, message => "Invalid type parameter" );
@@ -93,24 +97,6 @@ sub get_categories_GET {
 	$categories->{'categories'} = \@results; 
 	return $self->status_ok( $c, entity => $categories );
 }
-	
-sub parse_params :Private {
-	my ( $string ) = @_;
-	
-	my %params = ();
-	my @param_list = split( ',', $string );
-	
-	foreach my $p ( @param_list ){
-		my ( $key, $value ) = split( '=', $p );
-		
-		$value =~ s/\+/ /g;
-		$params{$key} = $value;
-	}
-	
-	return \%params;
-}
-	
-	
 
 =head1 AUTHOR
 
@@ -124,5 +110,12 @@ it under the same terms as Perl itself.
 =cut
 
 __PACKAGE__->meta->make_immutable;
+
+__PACKAGE__->config(
+	'default'		=> 'application/json',
+	'map'		=> {
+		'application/json'	=> 'JSON',
+	},
+);
 
 1;
