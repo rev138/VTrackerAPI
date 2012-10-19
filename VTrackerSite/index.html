@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title> jQuery Mobile Boilerplate </title>
+	<title>VTracker</title>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,9 +25,7 @@
 
 	<!-- jQuery Mobile CSS bits -->
 	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
-
-	<!-- if you have a custom theme, add it here -->
-	<link rel="stylesheet"  href="themes/jQuery-Mobile-Boilerplate.css" />
+	<link rel="stylesheet"  href="themes/vtracker.css" />
 
 	<!-- Custom css -->
 	<link rel="stylesheet" href="css/custom.css" />
@@ -47,11 +45,17 @@
 	<div data-role="page">
 
 		<div data-role="header">
-			<h1>jQuery Mobile Boilerplate 1.2</h1>
+			<h1>VTracker</h1>
 		</div>
 
 		<div data-role="content">
-		
+
+			<div class="ui-grid-b iconlist">
+				<div class="ui-block-a"><a href="#"><img src="/path/to/icon.png" border="0" alt="Deer" />Deer</a></div>
+				<div class="ui-block-b"><a href="#"><img src="/path/to/icon.png" border="0" alt="Moose" />Moose</a></div>
+				<div class="ui-block-c"><a href="#"><img src="/path/to/icon.png" border="0" alt="Bear" />Bear</a></div>
+			</div>
+
 			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
 				<li data-role="list-divider">Snippet Pages</li>
 				<li><a href="buttons.html">Buttons</a></li>
