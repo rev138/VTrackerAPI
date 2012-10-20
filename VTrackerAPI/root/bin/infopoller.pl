@@ -25,13 +25,13 @@ sub logThis($);
 
 # Lookup records that are missing detailed location data
 my $locationset = $reports->find( { '$or' => [
-						{'location.town' => { '$exists' => 0 } },
-						{'location.county' => { '$exists' => 0 } },
-						{'location.state' => { '$exists' => 0 } },
-						{'location.abbr' => { '$exists' => 0 } },
-						{'location.zip' => { '$exists' => 0 } },
-						{'location.country' => { '$exists' => 0 } }
-					    ]}, { location => 1 } );
+					{'location.town' => { '$exists' => 0 } },
+					{'location.county' => { '$exists' => 0 } },
+					{'location.state' => { '$exists' => 0 } },
+					{'location.abbr' => { '$exists' => 0 } },
+					{'location.zip' => { '$exists' => 0 } },
+					{'location.country' => { '$exists' => 0 } }
+				    ]}, { location => 1 } );
 
 # Iterate over the records
 while(my $record = $locationset->next)
@@ -104,7 +104,7 @@ while(my $record = $locationset->next)
 			}
 			
 			# Early escape if we've located all of the fields
-			if($town && $county && $state && $abbr && $zip && $country)
+			if($town ne 'NULL' && $county ne 'NULL' && $state ne 'NULL' && $abbr ne 'NULL' && $zip ne 'NULL' && $country ne 'NULL')
 			{
 				logThis("Fast exit: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country");
 				$early = 1;
@@ -116,13 +116,13 @@ while(my $record = $locationset->next)
 
 		# Update the database with the newly-gathered data
 		$reports->update( { '_id' => $record->{'_id'} }, {'$set' => {
-																		'location.town' => $town,
-																		'location.county' => $county,
-																		'location.state' => $state,
-																		'location.abbr' => $abbr,
-																		'location.zip' => $zip,
-																		'location.country' => $country
-																	} });
+									'location.town' => $town,
+									'location.county' => $county,
+									'location.state' => $state,
+									'location.abbr' => $abbr,
+									'location.zip' => $zip,
+									'location.country' => $country
+									} });
 	}
 	else
 	{
@@ -147,23 +147,23 @@ while(my $record= $conditionset->next)
 {
     # Initialize vars
     my ($wunder_json,%weatherbits);
-	%weatherbits = (
-					'weather' => 'NULL', 
-					'temp_c' => 'NULL', 
-					'relhumid' => 'NULL', 
-					'wind_deg' => 'NULL', 
-					'wind_kph' => 'NULL', 
-					'pressure_mb' => 'NULL', 
-					'dewpoint_c' => 'NULL', 
-					'uv' => 'NULL'
-					);
+    %weatherbits = (
+			'weather' => 'NULL', 
+			'temp_c' => 'NULL', 
+			'relhumid' => 'NULL', 
+			'wind_deg' => 'NULL', 
+			'wind_kph' => 'NULL', 
+			'pressure_mb' => 'NULL', 
+			'dewpoint_c' => 'NULL', 
+			'uv' => 'NULL'
+			);
 
     # Get the ZIP code
     my $zip = $record->{'location'}->{'zip'};
 
-	logThis($record->{'_id'}." - ZIP: ##$zip##");
-	# Skip to the next record if the ZIP code isn't numeric
-	next if($zip eq "NULL");
+    logThis($record->{'_id'}." - ZIP: ##$zip##");
+    # Skip to the next record if the ZIP code isn't numeric
+    next if($zip eq "NULL");
 
     # Query Google Maps' API for detailed location information
     my $req = HTTP::Request->new(GET => $wunderapiurl.$zip.".json");
@@ -213,16 +213,15 @@ while(my $record= $conditionset->next)
 
 	# Update the database with the newly-gathered data
 	$reports->update( { '_id' => $record->{'_id'} }, {'$set' => {
-																'conditions.weather' => $weatherbits{'weather'},
-																'conditions.temp_c' => $weatherbits{'temp_c'},
-																'conditions.relative_humidity_percent' => $weatherbits{'relhumid'},
-																'conditions.wind_degrees' => $weatherbits{'wind_deg'},
-																'conditions.wind_kph' => $weatherbits{'wind_kph'},
-																'conditions.pressure_mb' => $weatherbits{'pressure_mb'},
-																'conditions.dewpoint_c' => $weatherbits{'dewpoint_c'},
-																'conditions.uv' => $weatherbits{'uv'}
-																} });
-
+								'conditions.weather' => $weatherbits{'weather'},
+								'conditions.temp_c' => $weatherbits{'temp_c'},
+								'conditions.relative_humidity_percent' => $weatherbits{'relhumid'},
+								'conditions.wind_degrees' => $weatherbits{'wind_deg'},
+								'conditions.wind_kph' => $weatherbits{'wind_kph'},
+								'conditions.pressure_mb' => $weatherbits{'pressure_mb'},
+								'conditions.dewpoint_c' => $weatherbits{'dewpoint_c'},
+								'conditions.uv' => $weatherbits{'uv'}
+								} });
 	sleep(8);
 }
 
@@ -237,4 +236,5 @@ sub logThis($)
         print LOG "[$stamp] $out\n";
         close(LOG);
 }
+
 
