@@ -168,6 +168,7 @@ $('#submit-report').on('pageinit', function() {
         	var juvenileCount = (!$("#count_juvenile",this).val())? "0" : $("#count_juvenile",this).val();
         	var unknownCount = (!$("#count_unknown",this).val())? "0" : $("#count_unknown",this).val();
         	totalCount = parseInt(maleCount) + parseInt(femaleCount) + parseInt(juvenileCount) + parseInt(unknownCount);
+        	var notes = $("#notes",this).val();
 	        var data = { "key" : keyValue,
 	              "latitude"      : $("#latitude",this).val(),
 	              "longitude"     : $("#longitude",this).val(),
@@ -179,6 +180,7 @@ $('#submit-report').on('pageinit', function() {
 	                      "count_juvenile" : juvenileCount,
 	                      "count_unknown" : unknownCount,
 	                      "count_total"   : totalCount,
+	                      "notes"         : notes,
 	                      "is_track"      : "0"
 	                },
 	              };
@@ -191,6 +193,7 @@ $('#submit-report').on('pageinit', function() {
 	           url: 'http://vtracker.hzsogood.net/api/submit_report',
 	           success: function(data) {
 	           		alert('Your Report has been sent');
+	           		window.location.href = "/";
 	           },
 	           error: function (XMLHttpRequest, textStatus, errorThrown) {
 	             console.log(XMLHttpRequest, textStatus, errorThrown);
