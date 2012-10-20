@@ -21,6 +21,11 @@ $ua->agent("VTrackerAPI/0.2 ");
 if($MongoDB::BSON::looks_like_number) {}
 sub logThis($);
 
+logThis("Let's begin!");
+
+# Main program loop
+START:
+
 ### LOCATION ###
 
 # Lookup records that are missing detailed location data
@@ -161,7 +166,7 @@ while(my $record= $conditionset->next)
     # Get the ZIP code
     my $zip = $record->{'location'}->{'zip'};
 
-    logThis($record->{'_id'}." - ZIP: ##$zip##");
+    logThis($record->{'_id'}." - ZIP: $zip");
     # Skip to the next record if the ZIP code isn't numeric
     next if($zip eq "NULL");
 
@@ -227,7 +232,12 @@ while(my $record= $conditionset->next)
 
 ### END CONDITIONS ###
 
+# Sleep one second, then go back and do it again
+sleep(1);
+goto START;
 
+
+### Functions
 sub logThis($)
 {
         my($out) = @_;
