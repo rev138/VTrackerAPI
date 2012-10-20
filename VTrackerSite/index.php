@@ -62,9 +62,9 @@
 $.ajax({
 	type: "GET",
 	data: {
-		type : "",
-		sort : "",
-		count : "",
+		// type : "",
+		// sort : "",
+		// count : "",
 	},
 	dataType:"json",
 	// url: 'json/getDefaultCategories.json',
