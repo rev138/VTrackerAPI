@@ -47,22 +47,22 @@
 				<legend>How Many?</legend>
 
 				<div class="count-input">
-					<input type="text" name="count_female" id="count_female" value=""  />
+					<input type="number" name="count_female" id="count_female" value=""  />
 					<label for="count_female">Females</label>
 				</div>
 
 				<div class="count-input">
-					<input type="text" name="count_male" id="count_male" value=""  />
+					<input type="number" name="count_male" id="count_male" value=""  />
 					<label for="count_male">Males</label>
 				</div>
 
 				<div class="count-input">
-					<input type="text" name="count_juvenile" id="count_juvenile" value=""  />
+					<input type="number" name="count_juvenile" id="count_juvenile" value=""  />
 					<label for="count_juvenile">Young</label>
 				</div>
 
 				<div class="count-input">
-					<input type="text" name="count_unknown" id="count_unknown" value=""  />
+					<input type="number" name="count_unknown" id="count_unknown" value=""  />
 					<label for="count_juvenile">Unknown</label>
 				</div>
 
