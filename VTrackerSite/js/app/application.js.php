@@ -170,7 +170,7 @@ $('#submit-report').on('pageinit', function() {
         	var unknownCount = (!$("#count_unknown",this).val())? "0" : $("#count_unknown",this).val();
         	totalCount = parseInt(maleCount) + parseInt(femaleCount) + parseInt(juvenileCount) + parseInt(unknownCount);
 	        var data = { "key" : keyValue,
-	              "latitude"      : $("#latitiude",this).val(),
+	              "latitude"      : $("#latitude",this).val(),
 	              "longitude"     : $("#longitude",this).val(),
 	              "altitude"      : $("#altitude",this).val(),
 	              "attributes"    : {
@@ -179,14 +179,15 @@ $('#submit-report').on('pageinit', function() {
 	                      "count_female"  : femaleCount,
 	                      "count_juvenile" : juvenileCount,
 	                      "count_unknown" : unknownCount,
-	                      "count_total"   : '"' + totalCount + '"',
+	                      "count_total"   : totalCount,
 	                      "is_track"      : "0"
 	                },
 	              };
 	         console.log(data);
 	         $.ajax({
 	           type: "POST",
-	           data: data,
+	           data: JSON.stringify(data),
+	           processData: "false",
 	           dataType:"json",
 	           contentType: "application/json;charset=UTF-8",
 	           url: 'http://vtracker.hzsogood.net/api/submit_report',
