@@ -194,19 +194,23 @@ $('#submit-report').on('pageinit', function() {
 	              };
 
 	         $.ajax({
-	           type: "POST",
-	           data: JSON.stringify(data),
-	           processData: "false",
-	           dataType:"json",
-	           contentType: "application/json;charset=UTF-8",
-	           url: 'http://vtracker.hzsogood.net/api/submit_report',
-	           success: function(data) {
-	           		alert('Your Report has been sent');
-	           		window.location.href = "/";
-	           },
-	           error: function (XMLHttpRequest, textStatus, errorThrown) {
-	             console.log(XMLHttpRequest, textStatus, errorThrown);
-	           }
+				type: "POST",
+				data: JSON.stringify(data),
+				processData: "false",
+				dataType:"json",
+				contentType: "application/json;charset=UTF-8",
+				url: 'http://vtracker.hzsogood.net/api/submit_report',
+				success: function(data) {
+					if ($('#species input:checked','form[name=submit-report]').val() == "Champtanystropheus americansus") {
+						$('[type="submit"]').raptorize();
+					} else {
+						alert('Your Report has been sent');
+						window.location.href = "/";
+					}
+				},
+				error: function (XMLHttpRequest, textStatus, errorThrown) {
+				  console.log(XMLHttpRequest, textStatus, errorThrown);
+				}
 	         });
 		return false;
 	});

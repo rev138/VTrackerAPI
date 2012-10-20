@@ -43,7 +43,8 @@
 	<script src="js/markerclusterer/markerclusterer.min.js"></script>
 	<script src="js/jqueryui/jquery.ui.map.js"></script>
 	<script src="js/jqueryui/jquery.ui.map.extensions.js"></script>
-
+	<script src="js/jquery.raptorize.1.0.js"></script>
+	
 	<!-- Startup Images for iDevices -->
 	<script>(function(){var a;if(navigator.platform==="iPad"){a=window.orientation!==90||window.orientation===-90?"images/startup-tablet-landscape.png":"images/startup-tablet-portrait.png"}else{a=window.devicePixelRatio===2?"images/startup-retina.png":"images/startup.png"}document.write('<link rel="apple-touch-startup-image" href="'+a+'"/>')})()</script>
 	<!-- The script prevents links from opening in mobile safari. https://gist.github.com/1042026 -->
