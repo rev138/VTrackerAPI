@@ -5,3 +5,26 @@ div.iconlist div {
 	margin: 5px;
 }
 
+#counts {
+  display: -webkit-flex;
+  display: flex;
+  margin-top: 1em;
+}
+
+.count-input {
+	flex: 1;
+	padding: 10px;
+}
+
+.count-input input {
+	width: 40px;
+}
+
+.count-input label,
+.count-input input {
+	margin: 0 auto;
+}
+
+.ui-br {
+	padding-bottom: 1em;
+}

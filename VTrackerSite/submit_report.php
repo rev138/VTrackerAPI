@@ -3,13 +3,13 @@
 	<div data-role="page" id="submit-report">
 
 		<div data-role="header" data-theme="b">
-			<a href="/" data-icon="home">Home</a>
+			<a href="/submit_test.php" data-icon="home">Home</a>
 			<h1>Wildlife Search</h1>
 		</div>
 
 		<div data-role="content">
 
-			<form action="submit_report" method="POST">
+			<form action="submit_test.php" name="submit-report" method="POST">
 
 				<div data-role="fieldcontain">
 					<input type="hidden" name="apikey"  id="apikey" value="">
@@ -33,8 +33,33 @@
 					</fieldset>
 				</div>
 
+				<div id="counts" class="ui-br" data-role="none" data-enhance="false">
+					<legend>How Many?</legend>
+
+					<div class="count-input">
+						<input type="text" name="count_female" id="count_female" value=""  />
+						<label for="count_female">Females</label>
+					</div>
+
+					<div class="count-input">
+						<input type="text" name="count_male" id="count_male" value=""  />
+						<label for="count_male">Males</label>
+					</div>
+
+					<div class="count-input">
+						<input type="text" name="count_juvenile" id="count_juvenile" value=""  />
+						<label for="count_juvenile">Young</label>
+					</div>
+
+					<div class="count-input">
+						<input type="text" name="count_unknown" id="count_unknown" value=""  />
+						<label for="count_juvenile">Unknown</label>
+					</div>
+
+				</div>
+
 				<div data-role="fieldcontain">
-					<label for="name">Name:</label>
+					<label for="name">Your Name:</label>
 					<input type="text" name="name" id="name" value=""  />
 				</div>
 
@@ -56,7 +81,7 @@
 	</div>
 <script type="text/javascript">
 
-		$('#submit-report').on('pageinit', function() {
+	$('#submit-report').on('pageinit', function() {
 
 		Handlebars.registerHelper('iter', function(context, options) {
 		  var fn = options.fn, inverse = options.inverse;
@@ -109,14 +134,15 @@
 		};
 		$().getLocationData(locdata);
 
-		// GET ANIMAL CATEGORY DATA
+		// GET ANIMAL CATEGORY DATA TO POPULATE WITH
 		$.ajax({
 			type: "GET",
 			data: {
+				_id: "<?php echo $_GET['_id'] ?>"
 			},
 			dataType:"json",
-			url: 'json/getCustomCategories.json',
-			//url: 'http://vtracker.hzsogood.net/api/get_categories',
+			//url: 'json/getCustomCategories.json',
+			url: 'http://vtracker.hzsogood.net/api/get_categories',
 			success: function(data) {
 				var thisCategory = data["categories"][0];
 				var source = $("#species-template").html();
@@ -129,6 +155,12 @@
 		    console.log(XMLHttpRequest, textStatus, errorThrown);
 			}
 		});
+
+// VALIDATION - SKIP FOR NOW
+
+		function formCheck (form) {
+			return false;
+		} 
 
 	});
 </script>
