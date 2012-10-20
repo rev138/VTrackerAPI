@@ -32,14 +32,13 @@
 
 	<!-- Javascript includes -->
 	<script src="js/jquery/jquery-1.8.2-min.js"></script>
-	<script src="js/handlebars/handlebars-1.0.rc.1.js"></script>
 	<script type="text/javascript">
 		$(document).bind("mobileinit", function () {
 			$.mobile.ajaxEnabled = false;
 		});
 	</script>
 	<script src="js/jquery/jquery.mobile-1.2.0.min.js"></script>
-
+	<script src="js/handlebars/handlebars-1.0.rc.1.js"></script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places"></script> 
 	<script src="js/markerclusterer/markerclusterer.min.js"></script>
 	<script src="js/jqueryui/jquery.ui.map.js"></script>

@@ -1,3 +1,5 @@
+<?php header("Content-type: text/javascript"); ?>
+
 $.fn.extend({
 	getLocationData: function(locdata){
 		if( "geolocation" in navigator ) {
@@ -33,7 +35,10 @@ $('#index').on("pageinit", function(event){
 			} else {
 				blockClass= "ui-block-c";
 			}
-		ret= ret + '<div class="' + blockClass + '"><a href="submit_report.php?id=context[i]._id"><img src="images/animals/deer.jpg" width="90px" border="0" alt="' + context[i].name + '" />' + context[i].name + "</a></div>";
+			var name = context[i].name,
+				icon = context[i].icon;
+
+		ret= ret + '<div class="' + blockClass + '"><a href="submit_report.php?id=context[i]._id"><img src="' + icon + '" width="90px" border="0" alt="' + name + '" />' + name + "</a></div>";
 		}
 		return ret;
 	});
