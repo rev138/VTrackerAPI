@@ -69,7 +69,7 @@
 			</div>
 
 			<div data-role="fieldcontain">
-				<label for="textarea">Notes:</label>
+				<label for="notes">Notes:</label>
 				<textarea cols="40" rows="8" name="notes" id="notes"></textarea>
 			</div>
 
