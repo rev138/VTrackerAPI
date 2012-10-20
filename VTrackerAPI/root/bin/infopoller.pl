@@ -146,7 +146,8 @@ while(my $record = $locationset->next)
 # if there is a valid zip code present for that record
 my $conditionset = $reports->find( { '$and' => [
                         {'conditions' => { '$exists' => 0 } },
-                        {'location.zip' => { '$exists' => 1 } }
+                        {'location.zip' => { '$exists' => 1 } },
+                        {'location.zip' => { '$ne' => 'NULL' } }
                         ]}, { 'location.zip' => 1 } );
 
 # Iterate over the records
@@ -169,8 +170,6 @@ while(my $record= $conditionset->next)
     my $zip = $record->{'location'}->{'zip'};
 
     logThis($record->{'_id'}." - ZIP: $zip");
-    # Skip to the next record if the ZIP code isn't numeric
-    next if($zip eq "NULL");
 
     # Query Google Maps' API for detailed location information
     my $req = HTTP::Request->new(GET => $wunderapiurl.$zip.".json");
