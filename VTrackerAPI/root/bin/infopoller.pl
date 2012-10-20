@@ -12,12 +12,14 @@ my $ip = '127.0.0.1';
 my $api_key = '00000000000000000000000000000000';
 my $mapsapiurl = 'http://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng=';
 my $wunderapiurl = 'http://api.wunderground.com/api/34d4a15f513f62b7/conditions/q/';
+my $logfile = '/tmp/infopoller.log';
 my $mongo = MongoDB::Connection->new(); # defaults to localhost with no auth
 my $database = $mongo->vtracker;
 my $reports = $database->reports;
 my $ua = LWP::UserAgent->new;
 $ua->agent("VTrackerAPI/0.2 ");
 if($MongoDB::BSON::looks_like_number) {}
+sub logThis($);
 
 ### LOCATION ###
 
@@ -104,13 +106,13 @@ while(my $record = $locationset->next)
 			# Early escape if we've located all of the fields
 			if($town && $county && $state && $abbr && $zip && $country)
 			{
-				print "Fast exit: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country\n";
+				logThis("Fast exit: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country");
 				$early = 1;
 				last;
 			}
 		}
-		print "Default: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country\n" if(!$early);
-		print "Done with searching for ".$record->{'_id'}."\n";
+		logThis("Default: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country") if(!$early);
+		logThis("Done with searching for ".$record->{'_id'});
 
 		# Update the database with the newly-gathered data
 		$reports->update( { '_id' => $record->{'_id'} }, {'$set' => {
@@ -124,7 +126,7 @@ while(my $record = $locationset->next)
 	}
 	else
 	{
-		print "Uh, oh: ".$google_json->{'status'}."\n";
+		logThis("Uh, oh: ".$google_json->{'status'});
 	}
 	sleep(8);
 }
@@ -159,7 +161,7 @@ while(my $record= $conditionset->next)
     # Get the ZIP code
     my $zip = $record->{'location'}->{'zip'};
 
-	print $record->{'_id'}." - ZIP: ##$zip##\n";
+	logThis($record->{'_id'}." - ZIP: ##$zip##");
 	# Skip to the next record if the ZIP code isn't numeric
 	next if($zip eq "NULL");
 
@@ -207,7 +209,7 @@ while(my $record= $conditionset->next)
 			$weatherbits{$bit} += 0 if($weatherbits{$bit} ne 'NULL');
 		}
 	}
-	print "$zip: ".$weatherbits{'weather'}.", ".$weatherbits{'temp_c'}.", ".$weatherbits{'relhumid'}.", ".$weatherbits{'wind_deg'}.", ".$weatherbits{'wind_kph'}.", ".$weatherbits{'pressure_mb'}.", ".$weatherbits{'dewpoint_c'}.", ".$weatherbits{'uv'}."\n";
+	logThis("$zip: ".$weatherbits{'weather'}.", ".$weatherbits{'temp_c'}.", ".$weatherbits{'relhumid'}.", ".$weatherbits{'wind_deg'}.", ".$weatherbits{'wind_kph'}.", ".$weatherbits{'pressure_mb'}.", ".$weatherbits{'dewpoint_c'}.", ".$weatherbits{'uv'});
 
 	# Update the database with the newly-gathered data
 	$reports->update( { '_id' => $record->{'_id'} }, {'$set' => {
@@ -225,4 +227,14 @@ while(my $record= $conditionset->next)
 }
 
 ### END CONDITIONS ###
+
+
+sub logThis($)
+{
+        my($out) = @_;
+        my $stamp = localtime(time);
+        open(LOG,">>$logfile");
+        print LOG "[$stamp] $out\n";
+        close(LOG);
+}
 
