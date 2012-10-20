@@ -1,0 +1,16 @@
+{ "categories":
+    [{
+    "_id": "506ac64046baf0b13c25be66",
+    "icon": "",
+    "liked_by": [],
+    "likes": "0",
+    "name": "Deer",
+    "plural": "Deer",
+    "species": [ 
+      "Odocoileus virginianus",
+      "Alces alces"
+      ],
+    "subcategories": ["506ac69a46baf0b13c25be67"],
+    "top_category": "1"
+  }]
+}

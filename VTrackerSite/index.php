@@ -32,7 +32,7 @@
 
 	</div>
 <script type="text/javascript">
-$(document).ready(function () {
+$('#index').on("pageinit", function(event){
 
 	Handlebars.registerHelper('list-main', function(context, options) {
 		var ret = "", blockClass;
@@ -60,7 +60,6 @@ $(document).ready(function () {
 			// count : "",
 		},
 		dataType:"json",
-		// url: 'json/getDefaultCategories.json',
 		url: 'http://vtracker.hzsogood.net/api/get_categories',
 		success: function(data) {
 			//ideally would split the content over the two templates
