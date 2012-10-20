@@ -43,3 +43,8 @@
 </head> 
 <body> 
 	<div data-role="page">
+
+		<div data-role="header">
+			<h1>VTracker</h1>
+		</div>
+

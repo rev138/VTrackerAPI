@@ -1,9 +1,5 @@
 <?php include("inc/header.inc.php"); ?>
 
-	<div data-role="header">
-		<h1>VTracker</h1>
-	</div>
-
 	<div data-role="content">
 
 		<div class="ui-grid-b iconlist">
