@@ -48,8 +48,8 @@ for( my $i = 0; $i < $count; $i++ ){
                                                 is_tracks       => 0,
  
                                         },
-                        timestamp       => {
-                                                epoch_time      => "1350589809",
+                        time       => {
+                                                epoch      => "1350589809",
                                                 string          => "Thu Oct 18 15:50:07 EDT 2012",
                                                 year            => "2012",
                                                 month           => "10",
@@ -57,7 +57,7 @@ for( my $i = 0; $i < $count; $i++ ){
                                                 hour            => "15",
                                                 minute          => "50",
                                                 second          => "7",
-                                                timezone        => "-400",
+                                                timezone        => "EDT",
                                         },
                 }
         );
