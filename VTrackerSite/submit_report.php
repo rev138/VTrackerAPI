@@ -28,6 +28,7 @@
 				<input type="hidden" name="latitude"  id="latitude" value="">
 				<input type="hidden" name="longitude" id="longitude" value="">
 				<input type="hidden" name="altitude" id="altitude" value="">
+				<input type="hidden" name="timestamp" id="timestamp" value="">
 			</div>
 
 			<div data-role="fieldcontain">
@@ -65,18 +66,19 @@
 					<input type="number" name="count_unknown" id="count_unknown" value=""  />
 					<label for="count_juvenile">Unknown</label>
 				</div>
-
 			</div>
 
-			<div data-role="fieldcontain">
+
+
+<!-- 			<div data-role="fieldcontain">
 				<label for="name">Your Name:</label>
 				<input type="text" name="name" id="name" value=""  />
-			</div>
+			</div> -->
 
-			<div data-role="fieldcontain">
+<!-- 			<div data-role="fieldcontain">
 				<label for="email">Email:</label>
 				<input type="email" name="email" id="email" value=""  />
-			</div>
+			</div> -->
 
 			<div class="ui-body ui-body-b">
 				<fieldset class="ui-grid-a">

@@ -173,8 +173,7 @@ sub get_reports_GET {
 	$query{'_id'} = $params->{'_id'} if defined( $params->{'_id'} );
 	$query{'api_key'} = $params->{'key'} if defined( $params->{'key'} );
 	$query{'attributes.species'} = $params->{'species'} if defined( $params->{'species'} );
-	
-	
+		
 	my $cursor = $c->fetchDocuments( 'reports', \%query );
 	my $count = $cursor->count;
 	
@@ -183,7 +182,16 @@ sub get_reports_GET {
 	$cursor->limit( $params->{'limit'} );
 	
 	@results = $cursor->all;
-	
+
+	if( $params->{'expanded'} ){
+		foreach my $result ( @results ){
+			my $item = $result->{'attributes'}->{'species'};	
+			my $doc = $c->fetchDocuments( 'species', { '_id' => $item } )->next;
+		
+			$result->{'attributes'}->{'species'} = $doc;
+		}
+	}
+		
 	# stringify the oid
 	foreach my $result ( @results ){ $result->{'_id'} = "$result->{'_id'}" };
 	
