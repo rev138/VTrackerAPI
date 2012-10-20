@@ -237,7 +237,7 @@ sleep(1);
 goto START;
 
 
-### Functions
+### Functions ###
 sub logThis($)
 {
         my($out) = @_;
