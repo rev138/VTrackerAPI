@@ -15,12 +15,14 @@
 
 		<div data-role="content">
 
-			<ul data-role="listview" data-filter="true" data-theme="c" data-dividertheme="b">
-				<li data-role="list-divider">Species</li>
-				<li><a href="/search.php?species=bear">Bear</a></li>
-				<li><a href="/search.php?species=deer">Deer</a></li>
-				<li><a href="/search.php?species=moose">Moose</a></li>
-				<li><a href="/search.php?species=catamount">Catamount</a></li>
+			<ul id="animal-categories-more2" data-role="listview" data-inset="false" data-theme="c" data-dividertheme="b">
+				<li data-role="list-divider">Filter By Species</li>
+				<script id="categories-template-more2" type="text/x-handlebars-template">
+				{{#each categories}}
+				  <li><a href="/search.php?species={{this.species}}">{{this.name}}</a></li>
+				{{/each}}
+
+				</script>
 			</ul>
 
 		</div>

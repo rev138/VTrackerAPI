@@ -1,7 +1,7 @@
 #wikipedia { 
 	display: none;
 	position: absolute;
-	top: 0;
+	top: -40px;
 	z-index:999999;
 	width: 100%;
 }
@@ -30,7 +30,7 @@ div.iconlist div img {
 	width: 80px !important;
 }
 
-#map { height: 300px; }
+#map { height: 240px; }
 
 #counts {
 	position: relative;

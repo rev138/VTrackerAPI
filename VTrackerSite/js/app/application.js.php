@@ -112,7 +112,6 @@ $('#submit-report').on('pageinit', function() {
 	// GET LOCATION
 	var locdata = {
 		success : function (position) {
-		console.log(position);
 			if (position.coords.hasOwnProperty('latitude')) {
 				$('#latitude').val(position.coords.latitude);
 			}
@@ -217,14 +216,39 @@ $('#submit-report').on('pageinit', function() {
 $('#search').on('pageinit', function() {
 	// TODO: Do the json API call
 
+	$.ajax({
+		type: "GET",
+		data: {
+			top_category: "1"
+			// type : "",
+			// sort : "",
+			// count : "",
+		},
+		dataType:"json",
+		url: 'http://vtracker.hzsogood.net/api/get_categories',
+		success: function(data) {
+			//ideally would split the content over the two templates
+			var sourceMore = $("#categories-template-more2").html();
+			var templateMore = Handlebars.compile(sourceMore);
+			$('#animal-categories-more2').append(templateMore(data)).listview("refresh");
+		},
+		error: function (XMLHttpRequest, textStatus, errorThrown) {
+			console.log(XMLHttpRequest, textStatus, errorThrown);
+		}
+	});
+
 // GET ANIMAL CATEGORY DATA TO POPULATE WITH
 	$.ajax({
 		type: "GET",
 		data: {
 			expanded : 1,
-			// type : "",
-			// sort : "",
-			// count : "",
+			<?php
+				if ($_GET['species']) {
+					$species = split(",", $_GET["species"]);
+					$species = $species[0];
+				}
+			?>
+			species : '<?php echo $species; ?>'
 		},
 		dataType:"json",
 		url: 'http://vtracker.hzsogood.net/api/get_reports',
@@ -256,6 +280,7 @@ $('#search').on('pageinit', function() {
 					species = attributes.species;
 					current_species = species.common_names[0];
 					latin_name = species._id;
+					icon = species.icon;
 				} else {
 					continue;
 				}
@@ -285,8 +310,8 @@ $('#search').on('pageinit', function() {
 					zip = loc.zip;
 				}
 
-				if (report.timestamp) {
-					timestamp = report.timestamp;
+				if (report.time) {
+					timestamp = report.time;
 					timestamp_day = timestamp.day;
 					timestamp_epoch_time = timestamp.epoch_time;
 					timestamp_hour = timestamp.hour;
@@ -313,7 +338,16 @@ $('#search').on('pageinit', function() {
 				});
 
 				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent('<h3>' + this.title + '</h3>' + ' <p>Learn more about <a href="#" class="dialog" data-species="' + this.species + '" data-latin-name="' + this.latin_name + '" data-rel="dialog">' + this.species + '</a></p>');
+
+					var markerContent = '<p><strong>' + this.title + '</strong></p>';
+						markerContent += '<p>This animal was seen on ' + timestamp_string + '</p>';
+						markerContent += '<p>At the time of sighting, there were ' + weather + ' skies, the temperature was ' + temp_c + 'C degrees and the relative humidity was ' + relative_humidity_percent + '%.</p>';
+						markerContent += '<p>Learn more about <a href="#" class="dialog" data-species="' + this.species + '" data-latin-name="' + this.latin_name + '" data-rel="dialog">' + this.species + '</a></p>';
+
+					infowindow.setContent(
+						markerContent
+					);
+
 					infowindow.open(map, this);
 					setTimeout(function() {
 						$(document).trigger('create');
@@ -326,20 +360,21 @@ $('#search').on('pageinit', function() {
 			$('.dialog').live('click', function() {
 				var species = $(this).attr('data-species');
 				var latin_name = $(this).attr('data-latin-name');
-				$('.wikiheader h3').html(species);
+				$('.wikiheader h3').html(species + ' (' + latin_name + ')');
 
 				$.get('/inc/getpage.inc.php?query='+latin_name, function(data) {
-				  $('.wikicontent').html(data);
+					$('.wikicontent').html(data);
 				});
 
 				$('#wikipedia').show().dialog();
+				$('.wikicontent').show();
 				return false;
 			})
 
 			$('.close').live('click', function() {
 				$('.ui-dialog').dialog('close');
 				$('#wikipedia').hide();
-				$('.wikicontent').html('');
+				$('.wikicontent').html('').hide();
 			});
 		},
 		error: function (XMLHttpRequest, textStatus, errorThrown) {
