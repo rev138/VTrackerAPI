@@ -15,13 +15,14 @@ div.iconlist div a {
 #map { height: 300px; }
 
 #counts {
-	display: -webkit-flex;
-	display: flex;
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
 	margin-top: 1em;
 }
 
 .count-input {
-	flex: 1;
+	box-flex: 1;
 	padding: 10px;
 }
 
