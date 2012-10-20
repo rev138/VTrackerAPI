@@ -10,8 +10,7 @@
 
 			<div id="animal-categories-main" class="ui-grid-b iconlist">
 				<script id="categories-template-main" type="text/x-handlebars-template">
-				{{#list-main categories}}
-				{{/list-main}}
+				{{#list-main categories}}{{/list-main}}
 				</script>
 			</div>
 
@@ -36,7 +35,7 @@
 	$(document).ready(function () {
 
 	Handlebars.registerHelper('list-main', function(context, options) {
-		var ret, blockClass;
+		var ret = "", blockClass;
 
 		//only top 10 categories
 		for(var i=0, l=context.length; i<l && i<10; i++) {
@@ -55,6 +54,7 @@
 $.ajax({
 	type: "GET",
 	data: {
+		top_category : "1",
 		// type : "",
 		// sort : "",
 		// count : "",
@@ -66,7 +66,7 @@ $.ajax({
 		//ideally would split the content over the two templates
 		var sourceMain = $("#categories-template-main").html();
 		var templateMain = Handlebars.compile(sourceMain);
-		$('#animal-categories-main').append(templateMain(data));
+		$('#animal-categories-main').append(templateMain(data)); //refresh equivalent?
 
 		var sourceMore = $("#categories-template-more").html();
 		var templateMore = Handlebars.compile(sourceMore);
