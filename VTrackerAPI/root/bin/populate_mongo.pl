@@ -19,9 +19,9 @@ my $database = $mongo->vtracker;
 my $reports = $database->reports;
 if($MongoDB::BSON::looks_like_number) {}
 
-$count = 50 unless $count;
+$count = 10 unless $count;
 
-my @species = ( 'Odocoileus virginianus', 'Odocoileus virginianus', 'Odocoileus virginianus', 'Odocoileus virginianus', 'Ursus americanus', 'Ursus americanus', 'Alces alces', 'Alces alces', 'Haliaeetus leucocephalus' );
+my @species = ( 'Odocoileus virginianus', 'Odocoileus virginianus', 'Odocoileus virginianus', 'Odocoileus virginianus', 'Ursa americanus', 'Ursa americanus', 'Alces alces', 'Alces alces', 'Haliaeetus leucocephalus' );
 for( my $i = 0; $i < $count; $i++ ){
 	my $lat = 44.816855 - rand( 1.564025 );
         my $lon = -73.119176 + rand( 0.650253 );
@@ -48,8 +48,8 @@ for( my $i = 0; $i < $count; $i++ ){
                                                 is_tracks       => 0,
  
                                         },
-                        timestamp       => {
-                                                epoch_time      => "1350589809",
+                        time       => {
+                                                epoch      => "1350589809",
                                                 string          => "Thu Oct 18 15:50:07 EDT 2012",
                                                 year            => "2012",
                                                 month           => "10",
@@ -57,7 +57,7 @@ for( my $i = 0; $i < $count; $i++ ){
                                                 hour            => "15",
                                                 minute          => "50",
                                                 second          => "7",
-                                                timezone        => "-400",
+                                                timezone        => "EDT",
                                         },
                 }
         );

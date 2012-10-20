@@ -112,6 +112,7 @@ $('#submit-report').on('pageinit', function() {
 	// GET LOCATION
 	var locdata = {
 		success : function (position) {
+		console.log(position);
 			if (position.coords.hasOwnProperty('latitude')) {
 				$('#latitude').val(position.coords.latitude).after('<p>latitude:' + position.coords.latitude +'</p>');
 			}
@@ -120,6 +121,9 @@ $('#submit-report').on('pageinit', function() {
 			}
 			if (position.coords.hasOwnProperty('altitude')) {
 				$('#altitude').val(position.coords.altitude).after('<p>altitude:' + position.coords.altitude +'</p>');
+			}
+			if (position.hasOwnProperty('timestamp')) {
+				$('#timestamp').val(position.timestamp).after('<p>timestamp:' + position.timestamp +'</p>');
 			}
 		}
 	};
@@ -159,53 +163,40 @@ $('#submit-report').on('pageinit', function() {
 
 	$('form[name=submit-report]').submit(function() {
 			//IN PROGRESS
-			// console.log(this, keyValue);
-
-			// var data = {
-			//       "key" : keyValue,
-			//       "latitude"      : "43.0",
-			//       "longitude"     : "73.0",
-			//       "altitude"      : "35.0",
-			//       "attributes"    : {
-			//               "species"  : "Champtanystropheus americansus",
-			//               "count_male"    : "0",
-			//               "count_female"  : "0",
-			//               "count_juvenile" : "0",
-			//               "count_unknown" : "2",
-			//               "count_total"   : "2",
-			//               "is_track"      : "0"
-			//         },
-			//       };
-			// console.log(data);
-		if(formCheck(this)) {
-			// $.ajax({
-			//   type: "POST",
-			//   data: {
-			//       "key" : keyValue,
-			//       "latitude"      : "43.0",
-			//       "longitude"     : "73.0",
-			//       "altitude"      : "35.0",
-			//       "attributes"    : {
-			//               "species"  : "Champtanystropheus americansus",
-			//               "count_male"    : "0",
-			//               "count_female"  : "0",
-			//               "count_juvenile" : "0",
-			//               "count_unknown" : "2",
-			//               "count_total"   : "2",
-			//               "is_track"      : "0"
-			//         },
-			//       },
-			//   dataType:"json",
-			//   url: 'http://vtracker.hzsogood.net/api/submit_report',
-			//   //url: 'http://vtracker.hzsogood.net/api/get_categories',
-			//   success: function(data) {
-			//		alert('POSTED');
-			//   },
-			//   error: function (XMLHttpRequest, textStatus, errorThrown) {
-			//     console.log(XMLHttpRequest, textStatus, errorThrown);
-			//   }
-			// });
-		}
+        	var totalCount = 0;
+        	var maleCount = (!$("#count_male",this).val())? "0" : $("#count_male",this).val();
+        	var femaleCount =(!$("#count_female",this).val())? "0" : $("#count_female",this).val();
+        	var juvenileCount = (!$("#count_juvenile",this).val())? "0" : $("#count_juvenile",this).val();
+        	var unknownCount = (!$("#count_unknown",this).val())? "0" : $("#count_unknown",this).val();
+        	totalCount = parseInt(maleCount) + parseInt(femaleCount) + parseInt(juvenileCount) + parseInt(unknownCount);
+	        var data = { "key" : keyValue,
+	              "latitude"      : $("#latitiude",this).val(),
+	              "longitude"     : $("#longitude",this).val(),
+	              "altitude"      : $("#altitude",this).val(),
+	              "attributes"    : {
+	                      "species"  : $('#species input:checked',this).val(),
+	                      "count_male"    : maleCount,
+	                      "count_female"  : femaleCount,
+	                      "count_juvenile" : juvenileCount,
+	                      "count_unknown" : unknownCount,
+	                      "count_total"   : '"' + totalCount + '"',
+	                      "is_track"      : "0"
+	                },
+	              };
+	         console.log(data);
+	         $.ajax({
+	           type: "POST",
+	           data: data,
+	           dataType:"json",
+	           contentType: "application/json;charset=UTF-8",
+	           url: 'http://vtracker.hzsogood.net/api/submit_report',
+	           success: function(data) {
+	           		alert('Your Report has been sent');
+	           },
+	           error: function (XMLHttpRequest, textStatus, errorThrown) {
+	             console.log(XMLHttpRequest, textStatus, errorThrown);
+	           }
+	         });
 		return false;
 	});
 });

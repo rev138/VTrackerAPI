@@ -2,10 +2,10 @@ package VTrackerAPI::Controller::API;
 use Moose;
 use namespace::autoclean;
 use DateTime;
-
 #use base 'Catalyst::Controller::REST';
 
 BEGIN { extends 'Catalyst::Controller::REST'; }
+
 
 =head1 NAME
 
@@ -129,7 +129,7 @@ sub submit_report_POST {
 	
 	$data->{'key'} = '' unless defined( $data->{'key'} );
 	
-	return $self->status_not_found( $c, message => 'Invalid API key' ) unless  validate_key( $c, $data->{'key'} );
+#	return $self->status_not_found( $c, message => 'Invalid API key' ) unless  validate_key( $c, $data->{'key'} );
 
 	my $id = $c->createDocument(
 		'reports',
@@ -173,8 +173,7 @@ sub get_reports_GET {
 	$query{'_id'} = $params->{'_id'} if defined( $params->{'_id'} );
 	$query{'api_key'} = $params->{'key'} if defined( $params->{'key'} );
 	$query{'attributes.species'} = $params->{'species'} if defined( $params->{'species'} );
-	
-	
+		
 	my $cursor = $c->fetchDocuments( 'reports', \%query );
 	my $count = $cursor->count;
 	
@@ -183,7 +182,16 @@ sub get_reports_GET {
 	$cursor->limit( $params->{'limit'} );
 	
 	@results = $cursor->all;
-	
+
+	if( $params->{'expanded'} ){
+		foreach my $result ( @results ){
+			my $item = $result->{'attributes'}->{'species'};	
+			my $doc = $c->fetchDocuments( 'species', { '_id' => $item } )->next;
+		
+			$result->{'attributes'}->{'species'} = $doc;
+		}
+	}
+		
 	# stringify the oid
 	foreach my $result ( @results ){ $result->{'_id'} = "$result->{'_id'}" };
 	
@@ -243,10 +251,7 @@ it under the same terms as Perl itself.
 __PACKAGE__->meta->make_immutable;
 
 __PACKAGE__->config(
-	'default'		=> 'application/json',
-	'map'		=> {
-		'application/json'	=> 'JSON',
-	},
+	'default'	=> 'application/json',
 );
 
 1;
