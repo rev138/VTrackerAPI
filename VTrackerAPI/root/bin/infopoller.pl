@@ -4,7 +4,7 @@ use warnings;
 use MongoDB;
 use LWP::UserAgent;
 use JSON;
-use Data::Dumper;
+$MongoDB::BSON::looks_like_number = 1;
 
 
 # Initialize variables, database, and collection
@@ -17,7 +17,7 @@ my $database = $mongo->vtracker;
 my $reports = $database->reports;
 my $ua = LWP::UserAgent->new;
 $ua->agent("VTrackerAPI/0.2 ");
-
+if($MongoDB::BSON::looks_like_number) {}
 
 ### LOCATION ###
 
@@ -42,6 +42,7 @@ while(my $record = $locationset->next)
 	$abbr = 'NULL';
 	$zip = 'NULL';
 	$country = 'NULL';
+	my $early = 0;
 
 	# Create lat/long string
 	my $latlng = $record->{'location'}->{'lat_long'}[0].",".$record->{'location'}->{'lat_long'}[1];
@@ -104,15 +105,28 @@ while(my $record = $locationset->next)
 			if($town && $county && $state && $abbr && $zip && $country)
 			{
 				print "Fast exit: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country\n";
+				$early = 1;
 				last;
 			}
 		}
+		print "Default: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country\n" if(!$early);
 		print "Done with searching for ".$record->{'_id'}."\n";
-		print "Default: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country\n";
 
 		# Update the database with the newly-gathered data
-			
+		$reports->update( { '_id' => $record->{'_id'} }, {'$set' => {
+																		'location.town' => $town,
+																		'location.county' => $county,
+																		'location.state' => $state,
+																		'location.abbr' => $abbr,
+																		'location.zip' => $zip,
+																		'location.country' => $country
+																	} });
 	}
+	else
+	{
+		print "Uh, oh: ".$google_json->{'status'}."\n";
+	}
+	sleep(8);
 }
 
 ### END LOCATION ###
@@ -130,13 +144,24 @@ my $conditionset = $reports->find( { '$and' => [
 while(my $record= $conditionset->next)
 {
     # Initialize vars
-    my ($wunder_json,$weather,$temp_c,$relhumid,$wind_deg,$wind_kph,$pressure_mb,$dewpoint_c,$uv);
+    my ($wunder_json,%weatherbits);
+	%weatherbits = (
+					'weather' => 'NULL', 
+					'temp_c' => 'NULL', 
+					'relhumid' => 'NULL', 
+					'wind_deg' => 'NULL', 
+					'wind_kph' => 'NULL', 
+					'pressure_mb' => 'NULL', 
+					'dewpoint_c' => 'NULL', 
+					'uv' => 'NULL'
+					);
 
     # Get the ZIP code
     my $zip = $record->{'location'}->{'zip'};
 
+	print $record->{'_id'}." - ZIP: ##$zip##\n";
 	# Skip to the next record if the ZIP code isn't numeric
-	next if($zip !~ /^\d+$/);
+	next if($zip eq "NULL");
 
     # Query Google Maps' API for detailed location information
     my $req = HTTP::Request->new(GET => $wunderapiurl.$zip.".json");
@@ -158,21 +183,45 @@ while(my $record= $conditionset->next)
 	# If the API call worked, start processing the condition data
 	if ($co->{'weather'})
 	{
-		$weather = $co->{'weather'};
-		$temp_c = $co->{'temp_c'};
-		$relhumid = $co->{'relative_humidity'};
-		$wind_deg = $co->{'wind_degrees'};
-		$wind_kph = $co->{'wind_kph'};
-		$pressure_mb = $co->{'pressure_mb'};
-		$dewpoint_c = $co->{'dewpoint_c'};
-		$uv = $co->{'UV'};
+		$weatherbits{'weather'} = $co->{'weather'};
+		$weatherbits{'temp_c'} = $co->{'temp_c'} + 0;
+		$weatherbits{'relhumid'} = $co->{'relative_humidity'};
+		$weatherbits{'wind_deg'} = $co->{'wind_degrees'} + 0;
+		$weatherbits{'wind_kph'} = $co->{'wind_kph'} + 0;
+		$weatherbits{'pressure_mb'} = $co->{'pressure_mb'} + 0;
+		$weatherbits{'dewpoint_c'} = $co->{'dewpoint_c'} + 0;
+		$weatherbits{'uv'} = $co->{'UV'} + 0;
 	}
-    if ($weather ne "" && $temp_c ne "" && $relhumid ne "" && $wind_deg ne "" && $wind_kph ne "" && $pressure_mb ne "" && $dewpoint_c ne "" && $uv ne "")
+	
+	# Sanitize the output
+	foreach my $bit (keys %weatherbits)
 	{
+		if (!defined($weatherbits{$bit}) || $weatherbits{$bit} eq "")
+		{
+			$weatherbits{$bit} = 'NULL';
+		}
 		# Strip the percent sign off the humidity
-		$relhumid =~ s/^(\d+)%$/$1/;
-		print "$zip: $weather, $temp_c, $relhumid, $wind_deg, $wind_kph, $pressure_mb, $dewpoint_c, $uv\n";
+		if($bit eq "relhumid")
+		{
+			$weatherbits{$bit} =~ s/(-?\d+)%$/$1/;
+			$weatherbits{$bit} += 0 if($weatherbits{$bit} ne 'NULL');
+		}
 	}
+	print "$zip: ".$weatherbits{'weather'}.", ".$weatherbits{'temp_c'}.", ".$weatherbits{'relhumid'}.", ".$weatherbits{'wind_deg'}.", ".$weatherbits{'wind_kph'}.", ".$weatherbits{'pressure_mb'}.", ".$weatherbits{'dewpoint_c'}.", ".$weatherbits{'uv'}."\n";
+
+	# Update the database with the newly-gathered data
+	$reports->update( { '_id' => $record->{'_id'} }, {'$set' => {
+																'conditions.weather' => $weatherbits{'weather'},
+																'conditions.temp_c' => $weatherbits{'temp_c'},
+																'conditions.relative_humidity_percent' => $weatherbits{'relhumid'},
+																'conditions.wind_degrees' => $weatherbits{'wind_deg'},
+																'conditions.wind_kph' => $weatherbits{'wind_kph'},
+																'conditions.pressure_mb' => $weatherbits{'pressure_mb'},
+																'conditions.dewpoint_c' => $weatherbits{'dewpoint_c'},
+																'conditions.uv' => $weatherbits{'uv'}
+																} });
+
+	sleep(8);
 }
 
 ### END CONDITIONS ###
