@@ -25,6 +25,7 @@
 
 		</div>
 
+		<div id="wikipedia" style="display:none;">TESTER</div>
 
 	<?php include("inc/footerbar.inc.php"); ?>
 

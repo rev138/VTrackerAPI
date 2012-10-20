@@ -247,7 +247,7 @@ $('#search').on('pageinit', function() {
 					current_species = species.common_names[0];
 					latin_name = species._id;
 				} else {
-					break;
+					continue;
 				}
 
 				if (report.conditions) {
@@ -303,7 +303,7 @@ $('#search').on('pageinit', function() {
 				});
 
 				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent('<h3>' + this.title + '</h3>' + ' <p>Learn more about <a href="/inc/getpage.inc.php?query=' + this.latin_name + '" data-rel="dialog">' + this.species + '</a></p>');
+					infowindow.setContent('<h3>' + this.title + '</h3>' + ' <p>Learn more about <a href="#wikipedia" data-rel="dialog">' + this.species + '</a></p>');
 					infowindow.open(map, this);
 					setTimeout(function() {
 						$(document).trigger('create');

@@ -1,13 +1,13 @@
 div.iconlist div {
-	width: 96px !important;
-	height: 96px !important;
+	width: 94px !important;
+	height: 94px !important;
 	border: 2px solid #5d8340;
 	margin: 5px;
 	padding: 2px;
 	background: #fff;
 }
 
-div.iconlist div a {
+div.iconlist div img {
 	height: 82px !important;
 	width: 82px !important;
 }
