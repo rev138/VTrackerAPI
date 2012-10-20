@@ -59,11 +59,15 @@ sub get_categories :Local :Path( '/api' ) :Args( 0 ) :ActionClass('REST') { }
 
 sub get_categories_GET {
 	my ( $self, $c ) = @_;
-	my $cursor = $c->fetchDocuments( 'categories', {} );
 	my $categories = { categories => [] };
 	my @results = ();
 	my $params = $c->req->query_params;
-
+	my %query = ();
+	
+	$query{'_id'} = $params->{'_id'} if defined( $params->{'_id'} );
+	
+	my $cursor = $c->fetchDocuments( 'categories', \%query );
+	
 	# defaults
 	$params->{'type'} = 'popular' unless defined( $params->{'type'} );
 	$params->{'sort'} = 'popular' unless defined( $params->{'sort'} );
@@ -173,10 +177,39 @@ sub get_reports_GET {
 	 
 	return $self->status_ok( $c, entity => $reports );
 }
+
+sub get_species :Local :Path( '/api' ) :Args( 0 ) :ActionClass('REST') { }
+
+sub get_species_GET {
+	my ( $self, $c ) = @_;
+	my $species = { species => [] };
+	my @results = ();
+	my $params = $c->req->query_params;
+	my %query = ();
+
+	$query{'_id'} = $params->{'_id'} if defined( $params->{'_id'} );
+		
+	my $cursor = $c->fetchDocuments( 'species', \%query );
+	my $count = $cursor->count;
+	
+	$params->{'limit'} = 100 unless defined( $params->{'limit'} );
+	$cursor->skip( int( $params->{'skip'} ) ) if defined( $params->{'skip'} );
+	$cursor->limit( $params->{'limit'} );
+	
+	@results = $cursor->all;
+	
+	# stringify the oid
+	foreach my $result ( @results ){ $result->{'_id'} = "$result->{'_id'}" };
+	
+	$species->{'species'} = \@results;
+	$species->{'count'} = $count;
+	 
+	return $self->status_ok( $c, entity => $species );
+}
+	
 	
 sub validate_key :Private {
 	my ( $c, $key ) = @_;
-	#my $oid = MongoDB::OID->new( 'value' => $key );
 	
 	return $c->fetchDocuments( 'keys', { '_id' => $key,  enabled => 1 } )->count;
 }

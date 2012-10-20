@@ -82,7 +82,10 @@ sub updateDocument :Private {
 sub fetchDocuments : Private {
 	my ( $c, $collection, $params, $sort_params, $limit, $skip ) = @_;
 	
-	$params->{'_id'} = MongoDB::OID->new( 'value' => $params->{'_id'} ) if defined( $params->{'_id'} );
+	# only OIDify this if it's an OID!
+	if( defined( $params->{'_id'} ) and ( $params->{'_id'} =~ m/^[0-9a-f]{24}$/ ) ){
+		$params->{'_id'} = MongoDB::OID->new( 'value' => $params->{'_id'} );
+	}
 	
 	my $docs = $c->model( 'DB' )->collection( $collection )->find( $params );
 	
