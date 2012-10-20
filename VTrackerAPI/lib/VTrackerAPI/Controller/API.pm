@@ -1,7 +1,9 @@
 package VTrackerAPI::Controller::API;
 use Moose;
 use namespace::autoclean;
-use base 'Catalyst::Controller::REST';
+use DateTime;
+
+#use base 'Catalyst::Controller::REST';
 
 BEGIN { extends 'Catalyst::Controller::REST'; }
 
@@ -21,7 +23,6 @@ Catalyst Controller.
 =head2 index
 
 =cut
-
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
@@ -45,7 +46,7 @@ sub new_key_POST {
 			email		=> $data->{'email'},
 			enabled		=> 1,
 			created		=> time,
-			ip_address	=> '0.0.0.0',
+			ip_address	=> $c->req->address,
 			reports		=> [],
 		}
 	);
@@ -62,7 +63,7 @@ sub get_categories_GET {
 	my $categories = { categories => [] };
 	my @results = ();
 	my $params = $c->req->query_params;
-	
+
 	# defaults
 	$params->{'type'} = 'popular' unless defined( $params->{'type'} );
 	$params->{'sort'} = 'popular' unless defined( $params->{'sort'} );
@@ -93,9 +94,58 @@ sub get_categories_GET {
 		return $self->status_not_found( $c, message => "Invalid type parameter" );
 	}
 	
+	# stringify the oid
 	foreach my $result ( @results ){ $result->{'_id'} = "$result->{'_id'}" };
+	
 	$categories->{'categories'} = \@results; 
 	return $self->status_ok( $c, entity => $categories );
+}
+
+sub submit_report :Local :Path( '/api' ) :Args( 0 ) :ActionClass('REST') { }
+
+sub submit_report_POST {
+	my ( $self, $c ) = @_;
+	my $data = $c->req->data;
+	my $now = time;
+	my $dt = DateTime->from_epoch( epoch => $now, time_zone => 'local' );
+	
+	$data->{'key'} = '' unless defined( $data->{'key'} );
+	
+	return $self->status_not_found( $c, message => 'Invalid API key' ) unless  validate_key( $c, $data->{'key'} );
+
+	my $id = $c->createDocument(
+		'reports',
+		{
+			api_key		=> $data->{'key'},
+			ip_address 	=> $c->req->address,
+			location 		=> {
+				lat_long	=> [ $data->{'latitude'}, $data->{'longitude'} ],
+				altitude	=> $data->{'altitude'},
+			},
+			attributes	=> $data->{'attributes'},
+			'time'		=> {
+				epoch		=> $now,
+				string		=> $dt->day_abbr . ' ' . $dt->month_abbr . ' ' . $dt->day . ' ' . $dt->hour . ':' . $dt->minute . ':' . $dt->second . ' ' . $dt->time_zone_short_name . ' ' . $dt->year,
+				year			=> $dt->year,
+				month		=> $dt->month,
+				day			=> $dt->day,
+				hour		=> $dt->hour,
+				minute		=> $dt->minute,
+				second		=> $dt->second,
+				timezone	=> $dt->time_zone_short_name,
+			},
+		}
+	);
+
+	return $self->status_no_content( $c, message => 'ERROR' ) if not defined( $id );
+	return $self->status_created( $c, location => $c->req->uri, entity => { '_id' => "$id" } );
+}
+
+sub validate_key :Private {
+	my ( $c, $key ) = @_;
+	#my $oid = MongoDB::OID->new( 'value' => $key );
+	
+	return $c->fetchDocuments( 'keys', { '_id' => $key,  enabled => 1 } )->count;
 }
 
 =head1 AUTHOR

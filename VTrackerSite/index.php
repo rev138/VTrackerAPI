@@ -8,26 +8,75 @@
 
 		<div data-role="content">
 
-			<div class="ui-grid-b iconlist">
-				<div class="ui-block-a"><a href="#"><img src="/path/to/icon.png" border="0" alt="Deer" />Deer</a></div>
-				<div class="ui-block-b"><a href="#"><img src="/path/to/icon.png" border="0" alt="Moose" />Moose</a></div>
-				<div class="ui-block-c"><a href="#"><img src="/path/to/icon.png" border="0" alt="Bear" />Bear</a></div>
+			<div id="animal-categories-main" class="ui-grid-b iconlist">
+				<script id="categories-template-main" type="text/x-handlebars-template">
+				{{#list-main categories}}
+				{{/list-main}}
+				</script>
 			</div>
 
 			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
 				<li><a href="search.php">Search &amp; Browse</a></li>
 			</ul>
 
-			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+			<ul id="animal-categories-more" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
 				<li data-role="list-divider">Report Other Species</li>
-				<li><a href="#">Test Species</a></li>
-				<li><a href="#">Test Species</a></li>
-				<li><a href="#">Test Species</a></li>
-				<li><a href="#">Test Species</a></li>
+				<script id="categories-template-more" type="text/x-handlebars-template">
+				{{#each categories}}
+				  <li><a href="submit_report.php?id={{this.id}}">{{this.name}}</a></li>
+				{{/each}}
+
+				</script>
 			</ul>
 
 		</div>
 
 	</div>
+<script type="text/javascript">
+	$(document).ready(function () {
 
+	Handlebars.registerHelper('list-main', function(context, options) {
+		var ret, blockClass;
+
+		//only top 10 categories
+		for(var i=0, l=context.length; i<l && i<10; i++) {
+			if (i%3 == 0) {
+				blockClass= "ui-block-a";
+			} else if (i%3 == 1) {
+				blockClass= "ui-block-b";
+			} else {
+				blockClass= "ui-block-c";
+			}
+		ret= ret + '<div class="' + blockClass + '"><a href="submit_report.php?id=context[i].id"><img src="images/animals/deer.jpg" width="90px" border="0" alt="' + context[i].name + '" />' + context[i].name + "</a></div>";
+		}
+		return ret;
+	});
+
+$.ajax({
+	type: "GET",
+	data: {
+		// type : "",
+		// sort : "",
+		// count : "",
+	},
+	dataType:"json",
+	// url: 'json/getDefaultCategories.json',
+	url: 'http://vtracker.hzsogood.net/api/get_categories',
+	success: function(data) {
+		//ideally would split the content over the two templates
+		var sourceMain = $("#categories-template-main").html();
+		var templateMain = Handlebars.compile(sourceMain);
+		$('#animal-categories-main').append(templateMain(data));
+
+		var sourceMore = $("#categories-template-more").html();
+		var templateMore = Handlebars.compile(sourceMore);
+		$('#animal-categories-more').append(templateMore(data)).listview("refresh");
+	},
+	error: function (XMLHttpRequest, textStatus, errorThrown) {
+	    console.log(XMLHttpRequest, textStatus, errorThrown);
+	}
+});
+
+	});
+</script>
 <?php include("inc/footer.inc.php"); ?>
