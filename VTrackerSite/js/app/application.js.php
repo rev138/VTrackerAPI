@@ -241,14 +241,14 @@ $('#search').on('pageinit', function() {
 	$.ajax({
 		type: "GET",
 		data: {
-			expanded : 1,
+			expanded : 1<?php if ($_GET['species']) echo ','; ?>
 			<?php
 				if ($_GET['species']) {
 					$species = split(",", $_GET["species"]);
 					$species = $species[0];
+				?>species : "<?php echo $species; ?>"<?php
 				}
 			?>
-			species : '<?php echo $species; ?>'
 		},
 		dataType:"json",
 		url: 'http://vtracker.hzsogood.net/api/get_reports',

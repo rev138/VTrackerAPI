@@ -3,8 +3,9 @@
 	<div data-role="page" id="search">
 
 		<div data-role="header" data-theme="b">
-			<a href="/" data-icon="home">Home</a>
+			<a href="/" data-icon="back" data-rel="back">Back</a>
 			<h1>Search &amp; Browse</h1>
+			<a href="/" data-icon="home" data-rel="home">Home</a>
 		</div>
 
 		<div data-role="content">
@@ -15,7 +16,7 @@
 
 		<div data-role="content">
 
-			<ul id="animal-categories-more2" data-role="listview" data-inset="false" data-theme="c" data-dividertheme="b">
+			<ul id="animal-categories-more2" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
 				<li data-role="list-divider">Filter By Species</li>
 				<script id="categories-template-more2" type="text/x-handlebars-template">
 				{{#each categories}}
