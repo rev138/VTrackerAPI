@@ -6,6 +6,12 @@ use DateTime;
 
 BEGIN { extends 'Catalyst::Controller::REST'; }
 
+__PACKAGE__->config(
+	'default'	=> 'application/json',
+	'map'	=> {
+		'application/json'	=> 'JSON',
+	},
+);
 
 =head1 NAME
 
@@ -129,7 +135,7 @@ sub submit_report_POST {
 	
 	$data->{'key'} = '' unless defined( $data->{'key'} );
 	
-#	return $self->status_not_found( $c, message => 'Invalid API key' ) unless  validate_key( $c, $data->{'key'} );
+	return $self->status_not_found( $c, message => 'Invalid API key' ) unless  validate_key( $c, $data->{'key'} );
 
 	my $id = $c->createDocument(
 		'reports',
@@ -187,7 +193,7 @@ sub get_reports_GET {
 		foreach my $result ( @results ){
 			my $item = $result->{'attributes'}->{'species'};	
 			my $doc = $c->fetchDocuments( 'species', { '_id' => $item } )->next;
-		
+			
 			$result->{'attributes'}->{'species'} = $doc;
 		}
 	}
@@ -250,8 +256,6 @@ it under the same terms as Perl itself.
 
 __PACKAGE__->meta->make_immutable;
 
-__PACKAGE__->config(
-	'default'	=> 'application/json',
-);
+
 
 1;
