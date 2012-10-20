@@ -54,6 +54,12 @@ Attempt to render a view, if needed.
 
 sub end : ActionClass('RenderView') {}
 
+sub auto :Local {
+	my ( $self, $c ) = @_;
+	
+	# this forces mongo to store numbers as numbers instead of strings
+	$MongoDB::BSON::looks_like_number = 1;
+}
 
 sub createDocument :Private {
 	my ( $c, $collection, $doc ) = @_;

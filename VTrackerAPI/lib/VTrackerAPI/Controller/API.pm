@@ -141,6 +141,39 @@ sub submit_report_POST {
 	return $self->status_created( $c, location => $c->req->uri, entity => { '_id' => "$id" } );
 }
 
+
+sub get_reports :Local :Path( '/api' ) :Args( 0 ) :ActionClass('REST') { }
+
+sub get_reports_GET {
+	my ( $self, $c ) = @_;
+	my $reports = { reports => [] };
+	my @results = ();
+	my $params = $c->req->query_params;
+	my %query = ();
+	
+	$query{'_id'} = $params->{'_id'} if defined( $params->{'_id'} );
+	$query{'api_key'} = $params->{'key'} if defined( $params->{'key'} );
+	$query{'attributes.species'} = $params->{'species'} if defined( $params->{'species'} );
+	
+	
+	my $cursor = $c->fetchDocuments( 'reports', \%query );
+	my $count = $cursor->count;
+	
+	$params->{'limit'} = 100 unless defined( $params->{'limit'} );
+	$cursor->skip( int( $params->{'skip'} ) ) if defined( $params->{'skip'} );
+	$cursor->limit( $params->{'limit'} );
+	
+	@results = $cursor->all;
+	
+	# stringify the oid
+	foreach my $result ( @results ){ $result->{'_id'} = "$result->{'_id'}" };
+	
+	$reports->{'reports'} = \@results;
+	$reports->{'count'} = $count;
+	 
+	return $self->status_ok( $c, entity => $reports );
+}
+	
 sub validate_key :Private {
 	my ( $c, $key ) = @_;
 	#my $oid = MongoDB::OID->new( 'value' => $key );
