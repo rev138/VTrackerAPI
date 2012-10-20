@@ -21,6 +21,10 @@ div.iconlist div a {
 	margin-top: 1em;
 }
 
+#counts legend {
+	width: 60px;
+}
+
 .count-input {
 	box-flex: 1;
 	padding: 10px;

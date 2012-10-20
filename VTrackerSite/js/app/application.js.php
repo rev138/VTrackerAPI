@@ -78,8 +78,8 @@ $('#submit-report').on('pageinit', function() {
 
 		if(context && context.length > 0) {
 			for(var i=0, j=context.length; i<j; i++) {
-				// TODO - make a comma delimited list of common names as the label
-				ret = ret + fn($.extend({}, context[i], { i: i, iPlus1: i + 1 , label : context[i].common_names[0]}));
+				// TODO - make a comma delimited list of common names as the label]
+				ret = ret + fn($.extend({}, context[i], { i: i, iPlus1: i + 1 , label : context[i].common_names[0], value : context[i]._id }));
 			}
 		} else {
 			ret = inverse(this);
@@ -162,41 +162,40 @@ $('#submit-report').on('pageinit', function() {
 	}
 
 	$('form[name=submit-report]').submit(function() {
-			//IN PROGRESS
-			var totalCount = 0;
-			var maleCount = (!$("#count_male",this).val())? "0" : $("#count_male",this).val();
-			var femaleCount =(!$("#count_female",this).val())? "0" : $("#count_female",this).val();
-			var juvenileCount = (!$("#count_juvenile",this).val())? "0" : $("#count_juvenile",this).val();
-			var unknownCount = (!$("#count_unknown",this).val())? "0" : $("#count_unknown",this).val();
-			totalCount = parseInt(maleCount) + parseInt(femaleCount) + parseInt(juvenileCount) + parseInt(unknownCount);
-			var data = { "key" : keyValue,
-				  "latitude"	  : $("#latitiude",this).val(),
-				  "longitude"	 : $("#longitude",this).val(),
-				  "altitude"	  : $("#altitude",this).val(),
-				  "attributes"	: {
-						  "species"  : $('#species input:checked',this).val(),
-						  "count_male"	: maleCount,
-						  "count_female"  : femaleCount,
-						  "count_juvenile" : juvenileCount,
-						  "count_unknown" : unknownCount,
-						  "count_total"   : '"' + totalCount + '"',
-						  "is_track"	  : "0"
-					},
-				  };
-			 console.log(data);
-			 $.ajax({
-			   type: "POST",
-			   data: data,
-			   dataType:"json",
-			   contentType: "application/json;charset=UTF-8",
-			   url: 'http://vtracker.hzsogood.net/api/submit_report',
-			   success: function(data) {
-			   		alert('Your Report has been sent');
-			   },
-			   error: function (XMLHttpRequest, textStatus, errorThrown) {
-				 console.log(XMLHttpRequest, textStatus, errorThrown);
-			   }
-			 });
+        	var totalCount = 0;
+        	var maleCount = (!$("#count_male",this).val())? "0" : $("#count_male",this).val();
+        	var femaleCount =(!$("#count_female",this).val())? "0" : $("#count_female",this).val();
+        	var juvenileCount = (!$("#count_juvenile",this).val())? "0" : $("#count_juvenile",this).val();
+        	var unknownCount = (!$("#count_unknown",this).val())? "0" : $("#count_unknown",this).val();
+        	totalCount = parseInt(maleCount) + parseInt(femaleCount) + parseInt(juvenileCount) + parseInt(unknownCount);
+	        var data = { "key" : keyValue,
+	              "latitude"      : $("#latitude",this).val(),
+	              "longitude"     : $("#longitude",this).val(),
+	              "altitude"      : $("#altitude",this).val(),
+	              "attributes"    : {
+	                      "species"  : $('#species input:checked',this).val(),
+	                      "count_male"    : maleCount,
+	                      "count_female"  : femaleCount,
+	                      "count_juvenile" : juvenileCount,
+	                      "count_unknown" : unknownCount,
+	                      "count_total"   : totalCount,
+	                      "is_track"      : "0"
+	                },
+	              };
+	         $.ajax({
+	           type: "POST",
+	           data: JSON.stringify(data),
+	           processData: "false",
+	           dataType:"json",
+	           contentType: "application/json;charset=UTF-8",
+	           url: 'http://vtracker.hzsogood.net/api/submit_report',
+	           success: function(data) {
+	           		alert('Your Report has been sent');
+	           },
+	           error: function (XMLHttpRequest, textStatus, errorThrown) {
+	             console.log(XMLHttpRequest, textStatus, errorThrown);
+	           }
+	         });
 		return false;
 	});
 });

@@ -36,7 +36,7 @@
 					<legend>Species:</legend>
 					<script id="species-template" type="text/x-handlebars-template">
 					{{#iter species}}
-						<input type="radio" name="species" id="radio-choice-{{iPlus1}}" value="{{label}}" />
+						<input type="radio" name="species" id="radio-choice-{{iPlus1}}" value="{{value}}" />
 						<label for="radio-choice-{{iPlus1}}">{{label}}</label>
 					{{/iter}}
 					</script>
