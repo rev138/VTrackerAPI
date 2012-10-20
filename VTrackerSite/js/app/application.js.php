@@ -38,7 +38,7 @@ $('#index').on("pageinit", function(event){
 			var name = context[i].name,
 				icon = context[i].icon;
 
-		ret= ret + '<div class="' + blockClass + '"><a href="submit_report.php?id=context[i]._id"><img src="' + icon + '" width="90px" border="0" alt="' + name + '" />' + name + "</a></div>";
+		ret= ret + '<div class="' + blockClass + '"><a href="submit_report.php?_id=' + context[i]._id + '"><img src="' + icon + '" width="90px" border="0" alt="' + name + '" />' + "</a></div>";
 		}
 		return ret;
 	});
@@ -141,9 +141,10 @@ $('#submit-report').on('pageinit', function() {
 			var templateCatInfo = Handlebars.compile(sourceCatInfo);
 			var sourceSpecies = $("#species-template").html();
 			var templateSpecies = Handlebars.compile(sourceSpecies);
+			$('h1').prepend(templateCatInfo(thisCategory));
 			$('#category-info').append(templateCatInfo(thisCategory));
 			$('#species').append(templateSpecies(thisCategory));
-			$("#submit-report").trigger("pagecreate");
+			$('#submit-report').trigger('pagecreate');
 			//refresh controlgroup?
 		},
 		error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -213,10 +214,23 @@ $('#submit-report').on('pageinit', function() {
 $('#search').on('pageinit', function() {
 	// TODO: Do the json API call
 
+// GET ANIMAL CATEGORY DATA TO POPULATE WITH
+	$.ajax({
+		type: "GET",
+		data: {
+			// type : "",
+			// sort : "",
+			// count : "",
+		},
+		dataType:"json",
+		url: 'http://vtracker.hzsogood.net/api/get_reports',
+		success: function(data) {
+
+			console.log(data);
+
 	// TODO: ON success of the json api call, do everything below this line
 	// We need to bind the map with the "init" event otherwise bounds will be null
-	$('#map').each(function() {
-		$(this).gmap({
+		$('#map').gmap({
 			'center': '44.260113, -72.575386',
 			'zoom': 7,
 			'disableDefaultUI': false
@@ -232,26 +246,29 @@ $('#search').on('pageinit', function() {
 			// var lngSpan = northEast.lng() - southWest.lng();
 			// var latSpan = northEast.lat() - southWest.lat();
 
-			// TODO: Replace this with actual markers from JSON
-			<?php include("../../inc/markers.inc.php"); ?>
-
-			// TODO: Instead of this for loop, do a loop to iterate over the json data
-			for ( var i = 0; i < markers.length; i++ ) {
-				var points = markers[i].split(',');
-				var lat = points[0];
-				var lng = points[1];
-				$(this).gmap('addMarker', { 
+			var reports = data["reports"];
+			for ( var i = 0; i < reports.length; i++ ) {
+				var lat = reports[i].location.lat_long[0];
+				var lng = reports[i].location.lat_long[1];
+				$('#map').gmap('addMarker', { 
 					'position': new google.maps.LatLng(lat, lng) 
 				}).click(function() {
-					$(this).gmap('openInfoWindow', { content : "<a href='http://en.wikipedia.org/w/index.php?title=Bear&action=render' class='dialog'>Read about Bears</a>" }, this);
+					$('#map').gmap('openInfoWindow', { content : "<a href='http://en.wikipedia.org/w/index.php?title=Bear&action=render' class='dialog'>Read about Bears</a>" }, this);
 				});
 			}
 
-			$(this).gmap('set', 'MarkerClusterer', new MarkerClusterer(map, $(this).gmap('get', 'markers')));
+			$('#map').gmap('set', 'MarkerClusterer', new MarkerClusterer(map, $('#map').gmap('get', 'markers')));
 			// To call methods in MarkerClusterer simply call
 			// $('#map_canvas').gmap('get', 'MarkerClusterer').callingSomeMethod();
 		});	
+
+		},
+		error: function (XMLHttpRequest, textStatus, errorThrown) {
+			console.log(XMLHttpRequest, textStatus, errorThrown);
+		}
 	});
+
+
 
 	// $(".dialog").live("click", function() {
 	// 	$.mobile.changePage($(this).attr('href'),'pop',false,true);

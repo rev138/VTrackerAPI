@@ -1,10 +1,14 @@
 <?php include("inc/header.inc.php"); ?>
 
+<script id="category-info-template" type="text/x-handlebars-template">
+	{{name}}
+</script>
+
 <div data-role="page" id="submit-report">
 
 	<div data-role="header" data-theme="b">
 		<a href="/" data-icon="home">Home</a>
-		<h1><?php echo $_GET['name']; ?> Report</h1>
+		<h1>Report</h1>
 	</div>
 
 	<div data-role="content">
