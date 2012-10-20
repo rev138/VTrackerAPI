@@ -27,24 +27,19 @@
 	<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />
 	<link rel="stylesheet"  href="themes/vtracker.css" />
 
-	<!-- Custom css -->
+	<!-- Custom CSS -->
 	<link rel="stylesheet" href="css/custom.css" />
 
 	<!-- Javascript includes -->
-	<script src="js/jquery-1.8.2-min.js"></script>
-	<script src="js/mobileinit.js"></script>
-	<script src="js/ios-orientationchange-fix.min.js"></script>
-	<script src="js/jquery.mobile-1.2.0.min.js"></script>
-	<script src="js/application.js"></script>
+	<script src="js/jquery/jquery-1.8.2-min.js"></script>
+	<script src="js/app/mobileinit.js"></script>
+	<script src="js/jquery/jquery.mobile-1.2.0.min.js"></script>
+	<script src="js/app/application.js"></script>
+
 	<!-- Startup Images for iDevices -->
 	<script>(function(){var a;if(navigator.platform==="iPad"){a=window.orientation!==90||window.orientation===-90?"images/startup-tablet-landscape.png":"images/startup-tablet-portrait.png"}else{a=window.devicePixelRatio===2?"images/startup-retina.png":"images/startup.png"}document.write('<link rel="apple-touch-startup-image" href="'+a+'"/>')})()</script>
 	<!-- The script prevents links from opening in mobile safari. https://gist.github.com/1042026 -->
 	<script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>
 </head> 
 <body> 
-	<div data-role="page">
-
-		<div data-role="header">
-			<h1>VT Wildlife Tracker</h1>
-		</div>
-
+		
