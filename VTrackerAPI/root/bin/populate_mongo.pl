@@ -19,9 +19,9 @@ my $database = $mongo->vtracker;
 my $reports = $database->reports;
 if($MongoDB::BSON::looks_like_number) {}
 
-$count = 50 unless $count;
+$count = 10 unless $count;
 
-my @species = ( 'Odocoileus virginianus', 'Odocoileus virginianus', 'Odocoileus virginianus', 'Odocoileus virginianus', 'Ursus americanus', 'Ursus americanus', 'Alces alces', 'Alces alces', 'Haliaeetus leucocephalus' );
+my @species = ( 'Odocoileus virginianus', 'Odocoileus virginianus', 'Odocoileus virginianus', 'Odocoileus virginianus', 'Ursa americanus', 'Ursa americanus', 'Alces alces', 'Alces alces', 'Haliaeetus leucocephalus' );
 for( my $i = 0; $i < $count; $i++ ){
 	my $lat = 44.816855 - rand( 1.564025 );
         my $lon = -73.119176 + rand( 0.650253 );
