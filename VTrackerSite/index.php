@@ -3,7 +3,7 @@
 	<div data-role="page" id="index">
 
 		<div data-role="header" data-theme="a">
-			<h1>VT Wildlife Tracker</h1>
+			<h1>Wildlife Tracker</h1>
 		</div>
 
 		<div data-role="content">

@@ -4,7 +4,7 @@
 
 		<div data-role="header" data-theme="b">
 			<a href="/" data-icon="back" data-rel="back">Back</a>
-			<h1>Search &amp; Browse</h1>
+			<h1>Search</h1>
 			<a href="/" data-icon="home" data-rel="home">Home</a>
 		</div>
 
