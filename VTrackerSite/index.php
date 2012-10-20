@@ -68,7 +68,7 @@ $.ajax({
 	},
 	dataType:"json",
 	// url: 'json/getDefaultCategories.json',
-	url: 'http://vtracker.hzsogood.net:3000/api/get_categories',
+	url: 'http://vtracker.hzsogood.net/api/get_categories',
 	success: function(data) {
 			//todo - get the main list working
 		//$('#animal-categories-main').append(template(data)).iconlist("refresh");
