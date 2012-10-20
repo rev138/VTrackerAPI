@@ -125,7 +125,7 @@ while(my $record = $locationset->next)
 									'location.county' => $county,
 									'location.state' => $state,
 									'location.abbr' => $abbr,
-									'location.zip' => $zip,
+									'location.zip' => "$zip",
 									'location.country' => $country
 									} });
 	}
