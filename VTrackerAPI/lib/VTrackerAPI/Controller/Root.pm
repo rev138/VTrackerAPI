@@ -1,6 +1,7 @@
 package VTrackerAPI::Controller::Root;
 use Moose;
 use namespace::autoclean;
+use MongoDB;
 
 BEGIN { extends 'Catalyst::Controller' }
 
@@ -52,6 +53,39 @@ Attempt to render a view, if needed.
 =cut
 
 sub end : ActionClass('RenderView') {}
+
+
+sub createDocument :Private {
+	my ( $c, $collection, $doc ) = @_;
+	
+	return $c->model( 'DB' )->collection( $collection )->insert( $doc );
+}
+
+sub deleteDocument :Private {
+	my ( $c, $collection, $doc_id ) = @_;
+
+	return $c->model( 'DB' )->collection( $collection )->remove( { '_id' => MongoDB::OID->new( 'value' => $doc_id ) } );
+}
+
+sub updateDocument :Private {
+	my ( $c, $collection, $doc_id, $doc ) = @_;
+	
+	return $c->model( 'DB' )->collection( $collection )->update( { '_id' => MongoDB::OID->new( 'value' => $doc_id ) }, $doc );
+}
+
+sub fetchDocuments : Private {
+	my ( $c, $collection, $params, $sort_params, $limit, $skip ) = @_;
+	
+	$params->{'_id'} = MongoDB::OID->new( 'value' => $params->{'_id'} ) if defined( $params->{'_id'} );
+
+	my $docs = $c->model( 'DB' )->collection( $collection )->find( $params );
+	
+	if( $sort_params ){ $docs = $docs->sort( $sort_params ) }
+	if( $skip ){ $docs = $docs->skip( $skip ) }
+	if( $limit ){ $docs = $docs->limit( $limit ) }
+	
+	return( $docs );
+}
 
 =head1 AUTHOR
 

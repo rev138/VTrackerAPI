@@ -1,5 +1,5 @@
 /* 
-	jQuery Mobile Boilerplate
+	VTracker
 	mobileinit.js
 	http://jquerymobile.com/demos/1.0.1/docs/api/globalconfig.html
 

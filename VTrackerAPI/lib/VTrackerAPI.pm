@@ -40,11 +40,17 @@ __PACKAGE__->config(
     # Disable deprecated behavior needed by old applications
     disable_component_resolution_regex_fallback => 1,
     enable_catalyst_header => 1, # Send X-Catalyst header
+    'View::JSON' => { allow_callback => 1 },
 );
 
 # Start the application
 __PACKAGE__->setup();
 
+# make these methods globally available
+sub createDocument { return VTrackerAPI::Controller::Root::createDocument(@_); }
+sub updateDocument { return VTrackerAPI::Controller::Root::updateDocument(@_); }
+sub deleteDocument { return VTrackerAPI::Controller::Root::deleteDocument(@_); }
+sub fetchDocuments { return VTrackerAPI::Controller::Root::fetchDocuments(@_); }
 
 =head1 NAME
 
