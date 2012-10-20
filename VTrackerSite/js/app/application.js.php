@@ -78,8 +78,8 @@ $('#submit-report').on('pageinit', function() {
 
 		if(context && context.length > 0) {
 			for(var i=0, j=context.length; i<j; i++) {
-				// TODO - make a comma delimited list of common names as the label
-				ret = ret + fn($.extend({}, context[i], { i: i, iPlus1: i + 1 , label : context[i].common_names[0]}));
+				// TODO - make a comma delimited list of common names as the label]
+				ret = ret + fn($.extend({}, context[i], { i: i, iPlus1: i + 1 , label : context[i].common_names[0], value : context[i]._id }));
 			}
 		} else {
 			ret = inverse(this);
@@ -162,7 +162,6 @@ $('#submit-report').on('pageinit', function() {
 	}
 
 	$('form[name=submit-report]').submit(function() {
-			//IN PROGRESS
         	var totalCount = 0;
         	var maleCount = (!$("#count_male",this).val())? "0" : $("#count_male",this).val();
         	var femaleCount =(!$("#count_female",this).val())? "0" : $("#count_female",this).val();
@@ -183,7 +182,6 @@ $('#submit-report').on('pageinit', function() {
 	                      "is_track"      : "0"
 	                },
 	              };
-	         console.log(data);
 	         $.ajax({
 	           type: "POST",
 	           data: JSON.stringify(data),
