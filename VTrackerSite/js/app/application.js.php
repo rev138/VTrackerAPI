@@ -303,7 +303,7 @@ $('#search').on('pageinit', function() {
 				});
 
 				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent('<h3>' + this.title + '</h3>' + ' <p>Learn more about <a href="#wikipedia" data-rel="dialog">' + this.species + '</a></p>');
+					infowindow.setContent('<h3>' + this.title + '</h3>' + ' <p>Learn more about <a href="#" class="dialog" data-species="' + this.species + '" data-latin-name="' + this.latin_name + '" data-rel="dialog">' + this.species + '</a></p>');
 					infowindow.open(map, this);
 					setTimeout(function() {
 						$(document).trigger('create');
@@ -313,6 +313,24 @@ $('#search').on('pageinit', function() {
 			}
 			var markerCluster = new MarkerClusterer(map, markers);
 
+			$('.dialog').live('click', function() {
+				var species = $(this).attr('data-species');
+				var latin_name = $(this).attr('data-latin-name');
+				$('.wikiheader h3').html(species);
+
+				$.get('/inc/getpage.inc.php?query='+latin_name, function(data) {
+				  $('.wikicontent').html(data);
+				});
+
+				$('#wikipedia').show().dialog();
+				return false;
+			})
+
+			$('.close').live('click', function() {
+				$('.ui-dialog').dialog('close');
+				$('#wikipedia').hide();
+				$('.wikicontent').html('');
+			});
 		},
 		error: function (XMLHttpRequest, textStatus, errorThrown) {
 			console.log(XMLHttpRequest, textStatus, errorThrown);

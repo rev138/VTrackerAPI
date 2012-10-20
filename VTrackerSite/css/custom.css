@@ -1,3 +1,21 @@
+#wikipedia { 
+	display: none;
+	position: absolute;
+	top: 0;
+	z-index:999999;
+	width: 100%;
+}
+
+.wikicontent {
+	background: #fff !important;
+}
+
+.wikiwrap {
+	background: #5d8343 !important;
+} 
+
+.wikiheader { padding: 5px; }
+
 div.iconlist div {
 	width: 94px !important;
 	height: 94px !important;
