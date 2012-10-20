@@ -125,7 +125,7 @@ while(my $record = $locationset->next)
 									'location.county' => $county,
 									'location.state' => $state,
 									'location.abbr' => $abbr,
-									'location.zip' => "$zip",
+									'location.zip' => sprintf("%s",$zip),
 									'location.country' => $country
 									} });
 	}
@@ -168,6 +168,12 @@ while(my $record= $conditionset->next)
 
     # Get the ZIP code
     my $zip = $record->{'location'}->{'zip'};
+
+    # Throw a 0 on the front if there are fewer than 5 digits
+    if($zip =~ /^\d{4}$/)
+    {
+	$zip = "0".$zip;
+    }
 
     logThis($record->{'_id'}." - ZIP: $zip");
 
