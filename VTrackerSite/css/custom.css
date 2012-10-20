@@ -15,14 +15,17 @@ div.iconlist div img {
 #map { height: 300px; }
 
 #counts {
+	position: relative;
 	display: -webkit-box;
 	display: -moz-box;
 	display: box;
-	margin-top: 1em;
+	padding-top: 1.5em;
 }
 
 #counts legend {
-	width: 60px;
+	position: absolute;
+	top: 0;
+	width: 120px;
 }
 
 .count-input {
