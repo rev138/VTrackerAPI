@@ -119,6 +119,7 @@ while(my $record = $locationset->next)
 		logThis("Default: ".$record->{'_id'}." - $town, $county, $state ($abbr), $zip, $country") if(!$early);
 		logThis("Done with searching for ".$record->{'_id'});
 
+		$MongoDB::BSON::looks_like_number = 0;
 		# Update the database with the newly-gathered data
 		$reports->update( { '_id' => $record->{'_id'} }, {'$set' => {
 									'location.town' => $town,
@@ -141,6 +142,8 @@ while(my $record = $locationset->next)
 ### END LOCATION ###
 
 ### CONDITIONS ###
+
+$MongoDB::BSON::looks_like_number = 1;
 
 # Lookup records that are missing conditions data, but only
 # if there is a valid zip code present for that record
