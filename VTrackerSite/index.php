@@ -10,15 +10,9 @@
 
 			<div id="animal-categories-main" class="ui-grid-b iconlist">
 				<script id="categories-template-main" type="text/x-handlebars-template">
-				<!-- not currently functioning -->
 				{{#list-main categories}}
-				  {{name}}
 				{{/list-main}}
 				</script>
-				<div class="ui-block-a"><a href="#"><img src="images/animals/deer.jpg" width="90px" border="0" alt="Deer" /><span>Deer</span></a></div>
-				<div class="ui-block-b"><a href="#"><img src="images/animals/moose.jpg" width="90px" border="0" alt="Moose" /><span>Moose</span></a></div>
-				<div class="ui-block-c"><a href="#"><img src="images/animals/bear.gif" width="90px" border="0" alt="Bear" /><span>Bear</span></a></div>
-
 			</div>
 
 			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
@@ -29,7 +23,7 @@
 				<li data-role="list-divider">Report Other Species</li>
 				<script id="categories-template-more" type="text/x-handlebars-template">
 				{{#each categories}}
-				  <li><a href="#">{{this.name}}</a></li>
+				  <li><a href="submit_report.php?id={{this.id}}">{{this.name}}</a></li>
 				{{/each}}
 
 				</script>
@@ -41,22 +35,21 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 
-	//in progress... this does not seem to be rendering properly
-	Handlebars.registerHelper('list-main', function(context, block) {
-	var ret = "";
+	Handlebars.registerHelper('list-main', function(context, options) {
+		var ret, blockClass;
 
-	//only top 10 categories
-	for(var i=0; i<=10; i++) {
-		if (i%3 == 1) {
-			ret = ret + '<div class="ui-block-a">' + block(context[i]) + "</a></div>";
-			//<a href="#"><img src="/path/to/icon.png" border="0" alt="Deer" />Deer</a></div>
-		} else if (i%3 == 2) {
-			ret = ret + '<div class="ui-block-b">' + block(context[i]) + "</a></div>";
-		} else {
-			ret = ret + '<div class="ui-block-c">' + block(context[i]) + "</a></div>";
+		//only top 10 categories
+		for(var i=0, l=context.length; i<l && i<10; i++) {
+			if (i%3 == 0) {
+				blockClass= "ui-block-a";
+			} else if (i%3 == 1) {
+				blockClass= "ui-block-b";
+			} else {
+				blockClass= "ui-block-c";
+			}
+		ret= ret + '<div class="' + blockClass + '"><a href="submit_report.php?id=context[i].id"><img src="images/animals/deer.jpg" width="90px" border="0" alt="' + context[i].name + '" />' + context[i].name + "</a></div>";
 		}
-	}
-	return ret;
+		return ret;
 	});
 
 $.ajax({
@@ -70,11 +63,14 @@ $.ajax({
 	// url: 'json/getDefaultCategories.json',
 	url: 'http://vtracker.hzsogood.net/api/get_categories',
 	success: function(data) {
-			//todo - get the main list working
-		//$('#animal-categories-main').append(template(data)).iconlist("refresh");
-		var source = $("#categories-template-more").html();
-		var template = Handlebars.compile(source);
-		$('#animal-categories-more').append(template(data)).listview("refresh");
+		//ideally would split the content over the two templates
+		var sourceMain = $("#categories-template-main").html();
+		var templateMain = Handlebars.compile(sourceMain);
+		$('#animal-categories-main').append(templateMain(data));
+
+		var sourceMore = $("#categories-template-more").html();
+		var templateMore = Handlebars.compile(sourceMore);
+		$('#animal-categories-more').append(templateMore(data)).listview("refresh");
 	},
 	error: function (XMLHttpRequest, textStatus, errorThrown) {
 	    console.log(XMLHttpRequest, textStatus, errorThrown);
