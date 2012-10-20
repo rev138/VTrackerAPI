@@ -9,13 +9,15 @@
 		</div>
 
 		<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
-			<li data-role="list-divider">Snippet Pages</li>
-			<li><a href="buttons.html">Buttons</a></li>
-			<li><a href="grids.html">Grids</a></li>
-			<li><a href="collapsibles.html">Collapsible Boxes</a></li>
-			<li><a href="collapsible-sets.html">Collapsible Sets</a></li>
-			<li><a href="forms.html">Form Elements</a></li>
-			<li><a href="lists.html">List Views</a></li>
+			<li><a href="search.html">Search &amp; Browse</a></li>
+		</ul>
+
+		<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+			<li data-role="list-divider">Report Other Species</li>
+			<li><a href="#">Test Species</a></li>
+			<li><a href="#">Test Species</a></li>
+			<li><a href="#">Test Species</a></li>
+			<li><a href="#">Test Species</a></li>
 		</ul>
 
 	</div>
