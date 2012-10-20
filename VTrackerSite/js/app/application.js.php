@@ -107,23 +107,23 @@ $('#submit-report').on('pageinit', function() {
 			}
 		});
 	}
-	$('#apikey').val(keyValue).after('<p>APIkey:' + keyValue +'</p>');
+	$('#apikey').val(keyValue);
 
 	// GET LOCATION
 	var locdata = {
 		success : function (position) {
 		console.log(position);
 			if (position.coords.hasOwnProperty('latitude')) {
-				$('#latitude').val(position.coords.latitude).after('<p>latitude:' + position.coords.latitude +'</p>');
+				$('#latitude').val(position.coords.latitude);
 			}
 			if (position.coords.hasOwnProperty('longitude')) {
-				$('#longitude').val(position.coords.longitude).after('<p>longitude:' + position.coords.longitude +'</p>');
+				$('#longitude').val(position.coords.longitude);
 			}
 			if (position.coords.hasOwnProperty('altitude')) {
-				$('#altitude').val(position.coords.altitude).after('<p>altitude:' + position.coords.altitude +'</p>');
+				$('#altitude').val(position.coords.altitude);
 			}
 			if (position.hasOwnProperty('timestamp')) {
-				$('#timestamp').val(position.timestamp).after('<p>timestamp:' + position.timestamp +'</p>');
+				$('#timestamp').val(position.timestamp);
 			}
 		}
 	};
@@ -137,16 +137,20 @@ $('#submit-report').on('pageinit', function() {
 			species: "1"
 		},
 		dataType:"json",
-		//url: 'json/getCustomCategories.json',
 		url: 'http://vtracker.hzsogood.net/api/get_categories',
 		success: function(data) {
 			var thisCategory = data["categories"][0];
+			var sourceCatTitle = $("#category-title-template").html();
+			var templateCatTitle = Handlebars.compile(sourceCatTitle);
+
 			var sourceCatInfo = $("#category-info-template").html();
 			var templateCatInfo = Handlebars.compile(sourceCatInfo);
+
 			var sourceSpecies = $("#species-template").html();
 			var templateSpecies = Handlebars.compile(sourceSpecies);
-			$('h1').prepend(templateCatInfo(thisCategory));
+
 			$('#category-info').append(templateCatInfo(thisCategory));
+			$('h1').prepend(templateCatTitle(thisCategory));
 			$('#species').append(templateSpecies(thisCategory));
 			$('#submit-report').trigger('pagecreate');
 			//refresh controlgroup?

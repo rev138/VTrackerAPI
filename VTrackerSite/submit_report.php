@@ -1,6 +1,6 @@
 <?php include("inc/header.inc.php"); ?>
 
-<script id="category-info-template" type="text/x-handlebars-template">
+<script id="category-title-template" type="text/x-handlebars-template">
 	{{name}}
 </script>
 
@@ -19,7 +19,7 @@
 
 			<div id="category-info">
 				<script id="category-info-template" type="text/x-handlebars-template">
-					<h2>{{name}}</h2>
+						<h2><img src="{{icon}}" width="90px" border="0" alt="{{name}}" />{{name}}</h2>
 				</script>
 			</div>
 

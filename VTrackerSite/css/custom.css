@@ -63,3 +63,8 @@ div.iconlist div img {
 .ui-br {
 	padding-bottom: 1em;
 }
+
+#category-info img {
+	vertical-align: middle;
+	margin-right: 10px;
+}
