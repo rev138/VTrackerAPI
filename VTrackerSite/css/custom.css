@@ -1,7 +1,7 @@
 #wikipedia { 
 	display: none;
 	position: absolute;
-	top: -40px;
+	top: 0;
 	z-index:999999;
 	width: 100%;
 }
