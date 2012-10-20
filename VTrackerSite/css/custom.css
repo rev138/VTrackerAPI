@@ -5,10 +5,12 @@ div.iconlist div {
 	margin: 5px;
 }
 
+#map { height: 300px; }
+
 #counts {
-  display: -webkit-flex;
-  display: flex;
-  margin-top: 1em;
+	display: -webkit-flex;
+	display: flex;
+	margin-top: 1em;
 }
 
 .count-input {

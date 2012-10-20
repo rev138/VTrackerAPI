@@ -3,8 +3,8 @@
 	<div data-role="page" id="submit-report">
 
 		<div data-role="header" data-theme="b">
-			<a href="/submit_test.php" data-icon="home">Home</a>
-			<h1>Wildlife Search</h1>
+			<a href="/" data-icon="home">Home</a>
+			<h1><?php echo $_GET['name']; ?> Report</h1>
 		</div>
 
 		<div data-role="content">

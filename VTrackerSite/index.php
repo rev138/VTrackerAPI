@@ -22,7 +22,7 @@
 				<li data-role="list-divider">Report Other Species</li>
 				<script id="categories-template-more" type="text/x-handlebars-template">
 				{{#each categories}}
-				  <li><a href="submit_report.php?_id={{this._id}}">{{this.name}}</a></li>
+				  <li><a href="submit_report.php?_id={{this._id}}&name={{this.name}}">{{this.name}}</a></li>
 				{{/each}}
 
 				</script>
