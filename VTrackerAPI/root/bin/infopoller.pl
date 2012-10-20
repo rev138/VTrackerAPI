@@ -133,6 +133,8 @@ while(my $record = $locationset->next)
 	{
 		logThis("Uh, oh: ".$google_json->{'status'});
 	}
+	
+	# Keep Google from blocking us for too many queries in a certain period
 	sleep(8);
 }
 
@@ -227,6 +229,7 @@ while(my $record= $conditionset->next)
 								'conditions.dewpoint_c' => $weatherbits{'dewpoint_c'},
 								'conditions.uv' => $weatherbits{'uv'}
 								} });
+	# Keep Wunderground from blocking us for too many queries in a certain period
 	sleep(8);
 }
 
