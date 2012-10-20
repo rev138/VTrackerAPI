@@ -65,7 +65,7 @@ sub get_categories_GET {
 	my %query = ();
 	
 	$query{'_id'} = $params->{'_id'} if defined( $params->{'_id'} );
-	
+		
 	my $cursor = $c->fetchDocuments( 'categories', \%query );
 	
 	# defaults
@@ -96,6 +96,20 @@ sub get_categories_GET {
 	}
 	else {
 		return $self->status_not_found( $c, message => "Invalid type parameter" );
+	}
+	
+	if( $params->{'species'} ){
+		foreach my $result ( @results ){
+			my @species = ();
+			my $items = $result->{'species'};
+						
+			foreach my $item ( @$items ){
+				my $doc = $c->fetchDocuments( 'species', { '_id' => $item } )->next;
+				$species[@species] = $doc;
+			}
+		
+			$result->{'species'} = \@species;
+		}
 	}
 	
 	# stringify the oid
@@ -140,6 +154,7 @@ sub submit_report_POST {
 			},
 		}
 	);
+
 
 	return $self->status_no_content( $c, message => 'ERROR' ) if not defined( $id );
 	return $self->status_created( $c, location => $c->req->uri, entity => { '_id' => "$id" } );
