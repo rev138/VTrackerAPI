@@ -163,40 +163,40 @@ $('#submit-report').on('pageinit', function() {
 
 	$('form[name=submit-report]').submit(function() {
 			//IN PROGRESS
-        	var totalCount = 0;
-        	var maleCount = (!$("#count_male",this).val())? "0" : $("#count_male",this).val();
-        	var femaleCount =(!$("#count_female",this).val())? "0" : $("#count_female",this).val();
-        	var juvenileCount = (!$("#count_juvenile",this).val())? "0" : $("#count_juvenile",this).val();
-        	var unknownCount = (!$("#count_unknown",this).val())? "0" : $("#count_unknown",this).val();
-        	totalCount = parseInt(maleCount) + parseInt(femaleCount) + parseInt(juvenileCount) + parseInt(unknownCount);
-	        var data = { "key" : keyValue,
-	              "latitude"      : $("#latitiude",this).val(),
-	              "longitude"     : $("#longitude",this).val(),
-	              "altitude"      : $("#altitude",this).val(),
-	              "attributes"    : {
-	                      "species"  : $('#species input:checked',this).val(),
-	                      "count_male"    : maleCount,
-	                      "count_female"  : femaleCount,
-	                      "count_juvenile" : juvenileCount,
-	                      "count_unknown" : unknownCount,
-	                      "count_total"   : '"' + totalCount + '"',
-	                      "is_track"      : "0"
-	                },
-	              };
-	         console.log(data);
-	         $.ajax({
-	           type: "POST",
-	           data: data,
-	           dataType:"json",
-	           contentType: "application/json;charset=UTF-8",
-	           url: 'http://vtracker.hzsogood.net/api/submit_report',
-	           success: function(data) {
-	           		alert('Your Report has been sent');
-	           },
-	           error: function (XMLHttpRequest, textStatus, errorThrown) {
-	             console.log(XMLHttpRequest, textStatus, errorThrown);
-	           }
-	         });
+			var totalCount = 0;
+			var maleCount = (!$("#count_male",this).val())? "0" : $("#count_male",this).val();
+			var femaleCount =(!$("#count_female",this).val())? "0" : $("#count_female",this).val();
+			var juvenileCount = (!$("#count_juvenile",this).val())? "0" : $("#count_juvenile",this).val();
+			var unknownCount = (!$("#count_unknown",this).val())? "0" : $("#count_unknown",this).val();
+			totalCount = parseInt(maleCount) + parseInt(femaleCount) + parseInt(juvenileCount) + parseInt(unknownCount);
+			var data = { "key" : keyValue,
+				  "latitude"	  : $("#latitiude",this).val(),
+				  "longitude"	 : $("#longitude",this).val(),
+				  "altitude"	  : $("#altitude",this).val(),
+				  "attributes"	: {
+						  "species"  : $('#species input:checked',this).val(),
+						  "count_male"	: maleCount,
+						  "count_female"  : femaleCount,
+						  "count_juvenile" : juvenileCount,
+						  "count_unknown" : unknownCount,
+						  "count_total"   : '"' + totalCount + '"',
+						  "is_track"	  : "0"
+					},
+				  };
+			 console.log(data);
+			 $.ajax({
+			   type: "POST",
+			   data: data,
+			   dataType:"json",
+			   contentType: "application/json;charset=UTF-8",
+			   url: 'http://vtracker.hzsogood.net/api/submit_report',
+			   success: function(data) {
+			   		alert('Your Report has been sent');
+			   },
+			   error: function (XMLHttpRequest, textStatus, errorThrown) {
+				 console.log(XMLHttpRequest, textStatus, errorThrown);
+			   }
+			 });
 		return false;
 	});
 });
@@ -218,139 +218,102 @@ $('#search').on('pageinit', function() {
 		url: 'http://vtracker.hzsogood.net/api/get_reports',
 		success: function(data) {
 
-			// We need to bind the map with the "init" event otherwise bounds will be null
-			$('#map').gmap({
-				'center': '44.260113, -72.575386',
-				'zoom': 7,
-				'disableDefaultUI': false
-			}).bind('init', function(evt, map) { 
+			var center = new google.maps.LatLng(44.260113, -72.575386);
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 7,
+				center: center,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+			var markers = [];
 
-				// Vermont bounds
-				//# top left: 44.816855,-73.119176
-				//# bottom right: 43.25283,-72.468923
+			var reports = data["reports"], report;
 
-				// var bounds = map.getBounds();
-				// var southWest = bounds.getSouthWest();
-				// var northEast = bounds.getNorthEast();
-				// var lngSpan = northEast.lng() - southWest.lng();
-				// var latSpan = northEast.lat() - southWest.lat();
+			for ( var i = 0; i < reports.length; i++ ) {
 
-				// _id: "50827f98c8f06d8c12000000"
-				// attributes: Object
-				// 		count_female: 0
-				// 		count_juvenile: 0
-				// 		count_male: 0
-				// 		count_total: 1
-				// 		count_unknown: 1
-				// 		is_tracks: 0
-				// 		species: "Odocoileus virginianus"
-				// conditions: Object
-				// 		dewpoint_c: 12
-				// 		pressure_mb: 1004
-				// 		relative_humidity_percent: 98
-				// 		temp_c: 12.1
-				// 		uv: 0
-				// 		weather: "Clear"
-				// 		wind_degrees: 112
-				// 		wind_kph: 0
-				// 		ip_address: "127.0.0.1"
-				// location: Object
-				// 		abbr: "VT"
-				// 		country: "United States"
-				// 		county: "Windsor"
-				// 		elevation: 65.831186759603
-				// 		lat_long: Array[2]
-				// 		state: "Vermont"
-				// 		town: "Plymouth"
-				// 		zip: "05056"
-				// timestamp: Object
-				// 		day: 18
-				// 		epoch_time: 1350589809
-				// 		hour: 15
-				// 		minute: 50
-				// 		month: 10
-				// 		second: 7
-				// 		string: "Thu Oct 18 15:50:07 EDT 2012"
-				// 		timezone: -400
-				// 		year: 2012
+				report = reports[i];
 
-				var reports = data["reports"],
-					report;
+				attributes = report.attributes,
+					count_female = attributes.count_female,
+					count_juvenile = attributes.count_juvenile,
+					count_male = attributes.count_male,
+					count_total = attributes.count_total,
+					count_unknown = attributes.count_unknown,
+					is_tracks = attributes.is_tracks;
 
-				for ( var i = 0; i < reports.length; i++ ) {
-	
-					report = reports[i];
-
-					attributes = report.attributes,
-						count_female = attributes.count_female,
-						count_juvenile = attributes.count_juvenile,
-						count_male = attributes.count_male,
-						count_total = attributes.count_total,
-						count_unknown = attributes.count_unknown,
-						is_tracks = attributes.is_tracks;
-
-					if (attributes.species) {
-						species = attributes.species;
-						current_species = species.common_names[0];
-						latin_name = species._id;
-					}
-
-					if (report.conditions) {
-						conditions = report.conditions;
-						dewpoint_c = conditions.dewpoint_c;
-						pressure_mb = conditions.pressure_mb;
-						relative_humidity_percent = conditions.relative_humidity_percent;
-						temp_c = conditions.temp_c;
-						uv = conditions.uv;
-						weather = conditions.weather;
-						wind_degrees = conditions.wind_degrees;
-						wind_kph = conditions.wind_kph;
-					}
-
-					if (report.location) {
-						loc = report.location;
-						abbr = loc.abbr;
-						country = loc.country;
-						county = loc.county;
-						elevation = loc.elevation;
-						lat = loc.lat_long[0];
-						lng = loc.lat_long[1];
-						state = loc.state;
-						town = loc.town;
-						zip = loc.zip;
-					}
-
-					if (report.timestamp) {
-						timestamp = report.timestamp;
-						day = timestamp.day;
-						epoch_time = timestamp.epoch_time;
-						hour = timestamp.hour;
-						minute = timestamp.minute;
-						month = timestamp.month;
-						second = timestamp.second;
-						string = timestamp.string;
-						timezone = timestamp.timezone;
-						year = timestamp.year;
-					}
-
-					$('#map').gmap('addMarker', { 
-						'position': new google.maps.LatLng(lat, lng) 
-					}).click(function() {
-						$('#map').gmap('openInfoWindow', { content : "<a href='/inc/getpage.inc.php?query=" + latin_name + "' data-rel='dialog' data-role='button'>Read about " + current_species + "</a>" }, this);
-					});
+				if (attributes.species !== null) {
+					species = attributes.species;
+					current_species = species.common_names[0];
+					latin_name = species._id;
+				} else {
+					break;
 				}
 
-				$('#map').gmap('set', 'MarkerClusterer', new MarkerClusterer(map, $('#map').gmap('get', 'markers')));
-				// To call methods in MarkerClusterer simply call
-				// $('#map_canvas').gmap('get', 'MarkerClusterer').callingSomeMethod();
-			});	
+				if (report.conditions) {
+					conditions = report.conditions;
+					dewpoint_c = conditions.dewpoint_c;
+					pressure_mb = conditions.pressure_mb;
+					relative_humidity_percent = conditions.relative_humidity_percent;
+					temp_c = conditions.temp_c;
+					uv = conditions.uv;
+					weather = conditions.weather;
+					wind_degrees = conditions.wind_degrees;
+					wind_kph = conditions.wind_kph;
+				}
+
+				if (report.location) {
+					loc = report.location;
+					abbr = loc.abbr;
+					country = loc.country;
+					county = loc.county;
+					elevation = loc.elevation;
+					lat = loc.lat_long[0];
+					lng = loc.lat_long[1];
+					state = loc.state;
+					town = loc.town;
+					zip = loc.zip;
+				}
+
+				if (report.timestamp) {
+					timestamp = report.timestamp;
+					timestamp_day = timestamp.day;
+					timestamp_epoch_time = timestamp.epoch_time;
+					timestamp_hour = timestamp.hour;
+					timestamp_minute = timestamp.minute;
+					timestamp_month = timestamp.month;
+					timestamp_second = timestamp.second;
+					timestamp_string = timestamp.string;
+					timestamp_timezone = timestamp.timezone;
+					timestamp_year = timestamp.year;
+				}
+
+				var latLng = new google.maps.LatLng(lat, lng);
+				var marker = new google.maps.Marker({
+					position: latLng,
+					species: current_species,
+					latin_name: latin_name,
+					title: current_species + " sighting",
+					map: map
+				});
+
+				/* Create Info Windows */
+				var infowindow = new google.maps.InfoWindow({
+					content: " "
+				});
+
+				google.maps.event.addListener(marker, 'click', function() {
+					infowindow.setContent('<h3>' + this.title + '</h3>' + ' <p>Learn more about <a href="/inc/getpage.inc.php?query=' + this.latin_name + '" data-rel="dialog">' + this.species + '</a></p>');
+					infowindow.open(map, this);
+					setTimeout(function() {
+						$(document).trigger('create');
+					}, 150);
+				});
+				markers.push(marker);
+			}
+			var markerCluster = new MarkerClusterer(map, markers);
 
 		},
 		error: function (XMLHttpRequest, textStatus, errorThrown) {
 			console.log(XMLHttpRequest, textStatus, errorThrown);
 		}
-	});
-	$(".dialog").live("click", function() {
-		$.mobile.changePage($(this).attr('href'),'pop',false,true);
 	});
 });
