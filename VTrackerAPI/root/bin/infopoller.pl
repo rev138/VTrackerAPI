@@ -52,8 +52,8 @@ while(my $record = $locationset->next)
 	my $early = 0;
 
 	# Create lat/long string
-	my $latlng = $record->{'location'}->{'lat_long'}[0].",".$record->{'location'}->{'lat_long'}[1];
 	next if(!$record->{'location'}->{'lat_long'}[0] || !$record->{'location'}->{'lat_long'}[1]);
+	my $latlng = $record->{'location'}->{'lat_long'}[0].",".$record->{'location'}->{'lat_long'}[1];
 
 	# Query Google Maps' API for detailed location information
 	my $req = HTTP::Request->new(GET => $mapsapiurl.$latlng);
