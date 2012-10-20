@@ -17,8 +17,8 @@
 .wikiheader { padding: 5px; }
 
 div.iconlist div {
-	width: 94px !important;
-	height: 94px !important;
+	width: 90px !important;
+	height: 90px !important;
 	border: 2px solid #5d8340;
 	margin: 5px;
 	padding: 2px;
@@ -26,8 +26,8 @@ div.iconlist div {
 }
 
 div.iconlist div img {
-	height: 80px !important;
-	width: 80px !important;
+	height: 76px !important;
+	width: 76px !important;
 }
 
 #map { height: 240px; }
