@@ -11,14 +11,20 @@
 
 			<form action="submit_test.php" name="submit-report" method="POST">
 
+				<!-- TODO : second level category picker? -->
+
+				<div id="category-info">
+					<script id="category-info-template" type="text/x-handlebars-template">
+						<h2>{{name}}</h2>
+					</script>
+				</div>
+
 				<div data-role="fieldcontain">
 					<input type="hidden" name="apikey"  id="apikey" value="">
 					<input type="hidden" name="latitude"  id="latitude" value="">
 					<input type="hidden" name="longitude" id="longitude" value="">
 					<input type="hidden" name="altitude" id="altitude" value="">
 				</div>
-
-				<!-- TODO : second level category picker? -->
 
 				<div data-role="fieldcontain">
 					<fieldset id="species" data-role="controlgroup">
@@ -78,7 +84,6 @@
 
 		</div>
 
-	</div>
 <script type="text/javascript">
 
 	$('#submit-report').on('pageinit', function() {
@@ -89,7 +94,8 @@
 
 		  if(context && context.length > 0) {
 		    for(var i=0, j=context.length; i<j; i++) {
-		      ret = ret + fn($.extend({}, context[i], { i: i, iPlus1: i + 1 , label : context[i]}));
+		    	// TODO - make a comma delimited list of common names as the label
+		      ret = ret + fn($.extend({}, context[i], { i: i, iPlus1: i + 1 , label : context[i].common_names[0]}));
 		    }
 		  } else {
 		    ret = inverse(this);
@@ -110,6 +116,7 @@
 				url: 'http://vtracker.hzsogood.net/api/new_key',
 				success: function(data) {
 					localStorage.setItem(keyLabel, data.key);
+					keyValue = localStorage.getItem(keyLabel);
 				},
 				error: function (XMLHttpRequest, textStatus, errorThrown) {
 					console.log("couldn't get API key");
@@ -138,16 +145,20 @@
 		$.ajax({
 			type: "GET",
 			data: {
-				_id: "<?php echo $_GET['_id'] ?>"
+				_id: "<?php echo $_GET['_id'] ?>",
+				species: "1"
 			},
 			dataType:"json",
 			//url: 'json/getCustomCategories.json',
 			url: 'http://vtracker.hzsogood.net/api/get_categories',
 			success: function(data) {
 				var thisCategory = data["categories"][0];
-				var source = $("#species-template").html();
-				var template = Handlebars.compile(source);
-				$('#species').append(template(thisCategory));
+				var sourceCatInfo = $("#category-info-template").html();
+				var templateCatInfo = Handlebars.compile(sourceCatInfo);
+				var sourceSpecies = $("#species-template").html();
+				var templateSpecies = Handlebars.compile(sourceSpecies);
+				$('#category-info').append(templateCatInfo(thisCategory));
+				$('#species').append(templateSpecies(thisCategory));
 				$("#submit-report").trigger("pagecreate");
 				//refresh controlgroup?
 			},
@@ -159,10 +170,63 @@
 // VALIDATION - SKIP FOR NOW
 
 		function formCheck (form) {
-			return false;
+			return true;
 		} 
+
+      $('form[name=submit-report]').submit(function() {
+      		//IN PROGRESS
+        	// console.log(this, keyValue);
+
+	        // var data = {
+	        //       "key" : keyValue,
+	        //       "latitude"      : "43.0",
+	        //       "longitude"     : "73.0",
+	        //       "altitude"      : "35.0",
+	        //       "attributes"    : {
+	        //               "species"  : "Champtanystropheus americansus",
+	        //               "count_male"    : "0",
+	        //               "count_female"  : "0",
+	        //               "count_juvenile" : "0",
+	        //               "count_unknown" : "2",
+	        //               "count_total"   : "2",
+	        //               "is_track"      : "0"
+	        //         },
+	        //       };
+	        // console.log(data);
+          if(formCheck(this)) {
+	        // $.ajax({
+	        //   type: "POST",
+	        //   data: {
+	        //       "key" : keyValue,
+	        //       "latitude"      : "43.0",
+	        //       "longitude"     : "73.0",
+	        //       "altitude"      : "35.0",
+	        //       "attributes"    : {
+	        //               "species"  : "Champtanystropheus americansus",
+	        //               "count_male"    : "0",
+	        //               "count_female"  : "0",
+	        //               "count_juvenile" : "0",
+	        //               "count_unknown" : "2",
+	        //               "count_total"   : "2",
+	        //               "is_track"      : "0"
+	        //         },
+	        //       },
+	        //   dataType:"json",
+	        //   url: 'http://vtracker.hzsogood.net/api/submit_report',
+	        //   //url: 'http://vtracker.hzsogood.net/api/get_categories',
+	        //   success: function(data) {
+	        //   	alert('POSTED');
+	        //   },
+	        //   error: function (XMLHttpRequest, textStatus, errorThrown) {
+	        //     console.log(XMLHttpRequest, textStatus, errorThrown);
+	        //   }
+	        // });
+          }
+          return false;
+      });
 
 	});
 </script>
+</div> <!-- #submit-report -->
 
 <?php include("inc/footer.inc.php"); ?>
