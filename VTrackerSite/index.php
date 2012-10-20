@@ -22,7 +22,7 @@
 				<li data-role="list-divider">Report Other Species</li>
 				<script id="categories-template-more" type="text/x-handlebars-template">
 				{{#each categories}}
-				  <li><a href="submit_report.php?id={{this.id}}">{{this.name}}</a></li>
+				  <li><a href="submit_report.php?id={{this._id}}">{{this.name}}</a></li>
 				{{/each}}
 
 				</script>
@@ -32,7 +32,7 @@
 
 	</div>
 <script type="text/javascript">
-	$(document).ready(function () {
+$(document).ready(function () {
 
 	Handlebars.registerHelper('list-main', function(context, options) {
 		var ret = "", blockClass;
@@ -46,37 +46,37 @@
 			} else {
 				blockClass= "ui-block-c";
 			}
-		ret= ret + '<div class="' + blockClass + '"><a href="submit_report.php?id=context[i].id"><img src="images/animals/deer.jpg" width="90px" border="0" alt="' + context[i].name + '" />' + context[i].name + "</a></div>";
+		ret= ret + '<div class="' + blockClass + '"><a href="submit_report.php?id=context[i]._id"><img src="images/animals/deer.jpg" width="90px" border="0" alt="' + context[i].name + '" />' + context[i].name + "</a></div>";
 		}
 		return ret;
 	});
 
-$.ajax({
-	type: "GET",
-	data: {
-		top_category : "1",
-		// type : "",
-		// sort : "",
-		// count : "",
-	},
-	dataType:"json",
-	// url: 'json/getDefaultCategories.json',
-	url: 'http://vtracker.hzsogood.net/api/get_categories',
-	success: function(data) {
-		//ideally would split the content over the two templates
-		var sourceMain = $("#categories-template-main").html();
-		var templateMain = Handlebars.compile(sourceMain);
-		$('#animal-categories-main').append(templateMain(data)); //refresh equivalent?
+	$.ajax({
+		type: "GET",
+		data: {
+			top_category : "1",
+			// type : "",
+			// sort : "",
+			// count : "",
+		},
+		dataType:"json",
+		// url: 'json/getDefaultCategories.json',
+		url: 'http://vtracker.hzsogood.net/api/get_categories',
+		success: function(data) {
+			//ideally would split the content over the two templates
+			var sourceMain = $("#categories-template-main").html();
+			var templateMain = Handlebars.compile(sourceMain);
+			$('#animal-categories-main').append(templateMain(data)); //refresh equivalent?
 
-		var sourceMore = $("#categories-template-more").html();
-		var templateMore = Handlebars.compile(sourceMore);
-		$('#animal-categories-more').append(templateMore(data)).listview("refresh");
-	},
-	error: function (XMLHttpRequest, textStatus, errorThrown) {
-	    console.log(XMLHttpRequest, textStatus, errorThrown);
-	}
-});
-
+			var sourceMore = $("#categories-template-more").html();
+			var templateMore = Handlebars.compile(sourceMore);
+			$('#animal-categories-more').append(templateMore(data)).listview("refresh");
+		},
+		error: function (XMLHttpRequest, textStatus, errorThrown) {
+		    console.log(XMLHttpRequest, textStatus, errorThrown);
+		}
 	});
+
+});
 </script>
 <?php include("inc/footer.inc.php"); ?>
