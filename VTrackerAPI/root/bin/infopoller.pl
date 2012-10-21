@@ -12,7 +12,7 @@ my $ip = '127.0.0.1';
 my $api_key = '00000000000000000000000000000000';
 my $mapsapiurl = 'http://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng=';
 my $wunderapiurl = 'http://api.wunderground.com/api/34d4a15f513f62b7/conditions/q/';
-my $logfile = '/home/vtracker/logs/infopoller.log';
+my $logfile = '/home/vtracker.hzsogood.net/logs/infopoller.log';
 my $mongo = MongoDB::Connection->new(); # defaults to localhost with no auth
 my $database = $mongo->vtracker;
 my $reports = $database->reports;
