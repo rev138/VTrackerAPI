@@ -183,7 +183,7 @@ sub get_reports_GET {
 	my $cursor = $c->fetchDocuments( 'reports', \%query );
 	my $count = $cursor->count;
 	
-	$params->{'limit'} = 100 unless defined( $params->{'limit'} );
+	$params->{'limit'} = 1000 unless defined( $params->{'limit'} );
 	$cursor->skip( int( $params->{'skip'} ) ) if defined( $params->{'skip'} );
 	$cursor->limit( $params->{'limit'} );
 	
